@@ -1,2 +1,2 @@
-# CSC111-Final-Project
+# CSC111-FinalProject
 Final project for CSC111
