@@ -3,6 +3,7 @@ from constants import BLACK, WHITE, LINE_WIDTH
 
 
 class Board:
+    """This is the actual board object."""
     def __init__(self):
         self.board = []
         self.selected_piece = None

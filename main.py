@@ -8,7 +8,11 @@ pygame.display.set_caption('The L Game')
 
 FPS = 30
 
-def main():
+
+def main() -> None:
+    """
+    This is the main function that does BLAH BLAH BLAH
+    """
     run = True
     clock = pygame.time.Clock()
     board = Board()
@@ -28,4 +32,5 @@ def main():
     pygame.quit()
 
 
-main()
+if __name__ == '__main__':
+    main()

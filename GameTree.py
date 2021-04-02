@@ -81,7 +81,7 @@ class GameTree:
 
         The indentation level is specified by the <depth> parameter.
         """
-        if self.is_white_move:
+        if self.is_red_move:
             turn_desc = "Red's move"
         else:
             turn_desc = "Blue's move"
