@@ -1,0 +1,7 @@
+WIDTH, HEIGHT = 800, 800
+ROWS, COLS = 4, 4
+LINE_WIDTH = 10
+
+# Colours (RGB)
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
