@@ -3,28 +3,21 @@ This is the main game tree python file. This stores the tree, game tree and othe
 """
 from __future__ import annotations
 from typing import Optional
-
-GAME_START_MOVE = '*'
+from constants import STARTING_BOARD
 
 
 class GameTree:
     """A decision tree for L Game moves.
 
-    Each node in the tree stores an L Game move and a boolean representing whether
+    Each node in the tree stores an L Game board and a boolean representing whether
     the current player (who will make the next move) is Red or Blue.
 
     Instance Attributes:
-      - move: the current move (expressed in board notation), or '*' if this tree
-              represents the start of a game
+      - move: the current move (expressed in board notation)
       - is_red_move: True if Red is to make the next move after this, False otherwise
       - red_win_probability: the probability that white is going to win the game
-
-    Representation Invariants:
-        - self.move == GAME_START_MOVE or self.move is a valid L Game move
-        - self.move != GAME_START_MOVE or self.is_red_move == True
-        - 0.0 <= self.red_win_probability <= 1.0
     """
-    move: str
+    move: list
     is_red_move: bool
     red_win_probability: float
 
@@ -34,14 +27,14 @@ class GameTree:
     #      move by the current player
     _subtrees: list[GameTree]
 
-    def __init__(self, move: str = GAME_START_MOVE,
+    def __init__(self, move: list = STARTING_BOARD,
                  is_red_move: bool = True, red_win_probability: float = 0.0) -> None:
         """Initialize a new game tree.
 
         Note that this initializer uses optional arguments, as illustrated below.
 
         >>> game = GameTree()
-        >>> game.move == GAME_START_MOVE
+        >>> game.move == STARTING_BOARD
         True
         >>> game.is_red_move
         True
