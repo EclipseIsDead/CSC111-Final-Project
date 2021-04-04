@@ -6,7 +6,7 @@ SQUARE_SIZE = WIDTH // ROWS
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 
-STARTING_BOARD = [['hold', 'red', 'red', ''],
-                  ['', 'blue', 'red', ''],
-                  ['', 'blue', 'red', ''],
-                  ['', 'blue', 'blue', 'hold']]
+STARTING_BOARD = [['black', 'red', 'red', 'white'],
+                  ['white', 'blue', 'red', 'white'],
+                  ['white', 'blue', 'red', 'white'],
+                  ['white', 'blue', 'blue', 'black']]
