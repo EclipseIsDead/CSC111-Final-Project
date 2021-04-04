@@ -17,3 +17,7 @@ class Board:
                                                  col * SQUARE_SIZE,
                                                  SQUARE_SIZE,
                                                  SQUARE_SIZE), 1)
+
+    def create_board(self):
+        """We do this later"""
+        pass

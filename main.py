@@ -11,7 +11,7 @@ FPS = 30
 
 def main() -> None:
     """
-    This is the main function that does BLAH BLAH BLAH
+    This is the main function that does BLAH BLAH BLAH ur mom lol
     """
     run = True
     clock = pygame.time.Clock()
