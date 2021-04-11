@@ -13,7 +13,7 @@ class GameTree:
     the current player (who will make the next move) is Red or Blue.
 
     Instance Attributes:
-      - move: the current move (expressed in board notation)
+      - move: the current move (expressed in board notation, which is 4x4 of strings)
       - is_red_move: True if Red is to make the next move after this, False otherwise
       - red_win_probability: the probability that white is going to win the game
     """
@@ -87,5 +87,33 @@ class GameTree:
                 s += subtree._str_indented(depth + 1)
             return s
 
+    def is_previous_move(self, curr_move: list) -> bool:
+        """Check if the move has been played before."""
+        pass
+
     def _update_red_win_probability(self):
         pass
+
+
+def get_valid_moves(initial: list, red_move: bool) -> list:
+    """
+    This function returns a list of lists with all possible moves calculated when given a board
+    state, and whether it is red's move or not.
+
+    THIS FUNCTION NEEDS TO USE PREVIOUS MOVE FUNCTION AND THEN REMOVE PREVIOUS STATES FROM POSSIBLE.
+
+    Preconditions:
+        - initial is represented in move notation
+    """
+    move_set = []
+
+    for i in range(len(initial)):
+        for j in range(len(initial[i])):
+            if initial[i][j] == 'white':  # if this is a blank spot
+                copy = initial
+                if red_move:
+                    pass
+                else:
+                    pass
+
+    return move_set
