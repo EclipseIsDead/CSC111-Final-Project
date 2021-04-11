@@ -3,11 +3,12 @@ from constants import *
 
 class Board:
     """This is the actual board object."""
-    def __init__(self):
+    def __init__(self) -> None:
         self.board = STARTING_BOARD
+        self.previous_boards = []
         self.selected_piece = None
 
-    def draw_board(self, window):
+    def draw_board(self, window) -> None:
         window.fill(pygame.color.Color('white'))
 
         for row in range(ROWS):
@@ -17,7 +18,7 @@ class Board:
                                                  SQUARE_SIZE,
                                                  SQUARE_SIZE), LINE_THICC)
 
-    def draw_pieces(self, window):
+    def draw_pieces(self, window) -> None:
         """We do this later"""
 
         for col in range(COLS):
@@ -31,4 +32,19 @@ class Board:
                                                      col * SQUARE_SIZE + LINE_THICC,
                                                      SQUARE_SIZE - (2 * LINE_THICC),
                                                      SQUARE_SIZE -(2 * LINE_THICC)), 0)
+
+        self.previous_boards += self.board
+
+    def check_board(self, new_board) -> bool:
+        # Checks if the next move (therefore the next boardstate) is not in previous_boards, a list
+        # containing all peviously achieved board states
+        if new_board not in self.previous_boards:
+            return True
+        else:
+            return False
+
+    def make_move(self, new_board, window) -> None:
+        if self.check_board(new_board):
+            self.board = new_board
+            self.draw_pieces(window)
 
