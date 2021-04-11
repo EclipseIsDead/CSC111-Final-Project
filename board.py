@@ -50,4 +50,5 @@ class Board:
         if self.check_board(new_board):
             self.board = new_board
             self.draw_pieces(window)
-
+        else:
+            print('This is not a legal move.')
