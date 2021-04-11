@@ -1,6 +1,7 @@
 import pygame
 from constants import *
 
+
 class Board:
     """This is the actual board object."""
     def __init__(self) -> None:
@@ -36,8 +37,10 @@ class Board:
         self.previous_boards += self.board
 
     def check_board(self, new_board) -> bool:
-        # Checks if the next move (therefore the next boardstate) is not in previous_boards, a list
-        # containing all peviously achieved board states
+        """
+        Checks if the next move (therefore the next board state) is not in previous_boards, a list
+        containing all previously achieved board states
+        """
         if new_board not in self.previous_boards:
             return True
         else:
