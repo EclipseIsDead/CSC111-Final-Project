@@ -4,13 +4,14 @@ This is the main game tree python file. This stores the tree, game tree and othe
 from __future__ import annotations
 from typing import Optional
 from constants import STARTING_BOARD
+import numpy as np
 
 
 class GameTree:
     """A decision tree for L Game moves.
 
     Each node in the tree stores an L Game board and a boolean representing whether
-    the current player (who will make the next move) is Red or Blue.
+    the current player (who will make the next move) is Red or Blue. This is based on A2.
 
     Instance Attributes:
       - move: the current move (expressed in board notation, which is 4x4 of strings)
@@ -91,29 +92,83 @@ class GameTree:
         """Check if the move has been played before."""
         pass
 
+    def get_valid_moves(self, initial: list, red_move: bool) -> list:
+        """
+        This function returns a list of lists with all possible moves calculated when given a board
+        state, and whether it is red's move or not.
+
+        THIS FUNCTION NEEDS TO USE PREVIOUS MOVE FUNCTION AND THEN REMOVE PREVIOUS STATES FROM POSSIBLE.
+
+        Preconditions:
+            - initial is represented in move notation
+
+        >>> g = GameTree() # this should load a game tree with only the first position
+        >>> len(g.get_valid_moves(STARTING_BOARD, True)) == 5 # this is excluding holder permutations
+        """
+        move_set = []
+        # create a temporary board with a 2 thick border of 'black' to prevent negative indices
+        temp = np.pad(np.array(initial), pad_width=2, mode='constant', constant_values='black')
+
+        # there are only 8 permutations of L within each square, treating each square as a corner
+        for i in range(len(temp)):
+            for j in range(len(temp)):  # iterating through the array temp
+                if red_move:
+                    viable = {'white', 'red'}
+                    colour = 'red'
+                    # clear all current reds in the copy of initial board
+                    temp = np.where(temp == 'red', 'white', temp)
+                else:
+                    viable = {'white', 'blue'}
+                    colour = 'blue'
+                    # clear all current blues in the copy of initial board
+                    temp = np.where(temp == 'blue', 'white', temp)
+
+                if temp[i][j] in viable:
+                    # if this is a viable spot, or red we can simulate an l piece perm
+                    if all(x in viable for x in [temp[i + 1][j], temp[i + 2][j], temp[i][j + 1]]):
+                        copy = temp
+                        copy[i][j] = copy[i + 1][j] = copy[i + 2][j] = copy[i][j + 1] = colour
+                        move_set.append(copy[2:-2, 2:-2])
+                    if all(x in viable for x in [temp[i + 1][j], temp[i][j - 1], temp[i][j - 2]]):
+                        copy = temp
+                        copy[i][j] = copy[i + 1][j] = copy[i][j - 1] = copy[i][j - 2] = colour
+                        move_set.append(copy[2:-2, 2:-2])
+                    if all(x in viable for x in [temp[i - 1][j], temp[i - 2][j], temp[i][j - 1]]):
+                        copy = temp
+                        copy[i][j] = copy[i - 1][j] = copy[i - 2][j] = copy[i][j - 1] = colour
+                        move_set.append(copy[2:-2, 2:-2])
+                    if all(x in viable for x in [temp[i - 1][j], temp[i][j + 1], temp[i][j + 2]]):
+                        copy = temp
+                        copy[i][j] = copy[i - 1][j] = copy[i][j + 1] = copy[i][j + 2] = colour
+                        move_set.append(copy[2:-2, 2:-2])
+                    if all(x in viable for x in [temp[i + 1][j], temp[i + 2][j], temp[i][j - 1]]):
+                        copy = temp
+                        copy[i][j] = copy[i + 1][j] = copy[i + 2][j] = copy[i][j - 1] = colour
+                        move_set.append(copy[2:-2, 2:-2])
+                    if all(x in viable for x in [temp[i + 1][j], temp[i][j + 1], temp[i][j + 2]]):
+                        copy = temp
+                        copy[i][j] = copy[i + 1][j] = copy[i][j + 1] = copy[i][j + 2] = colour
+                        move_set.append(copy[2:-2, 2:-2])
+                    if all(x in viable for x in [temp[i - 1][j], temp[i - 2][j], temp[i][j + 1]]):
+                        copy = temp
+                        copy[i][j] = copy[i - 1][j] = copy[i - 2][j] = copy[i][j + 1] = colour
+                        move_set.append(copy[2:-2, 2:-2])
+                    if all(x in viable for x in [temp[i - 1][j], temp[i][j - 1], temp[i][j - 2]]):
+                        copy = temp
+                        copy[i][j] = copy[i - 1][j] = copy[i][j - 1] = copy[i][j - 2] = colour
+                        move_set.append(copy[2:-2, 2:-2])
+
+        # now we scramble the holder pieces in every possible permutation, and add those as well
+        for move in move_set:
+            pass
+
+        # now check and make sure that no move in the move set has been played before, because
+        # repetitions are not valid moves
+        for move in move_set:
+            if self.is_previous_move(move):
+                move_set.remove(move)
+
+        return move_set
+
     def _update_red_win_probability(self):
         pass
-
-
-def get_valid_moves(initial: list, red_move: bool) -> list:
-    """
-    This function returns a list of lists with all possible moves calculated when given a board
-    state, and whether it is red's move or not.
-
-    THIS FUNCTION NEEDS TO USE PREVIOUS MOVE FUNCTION AND THEN REMOVE PREVIOUS STATES FROM POSSIBLE.
-
-    Preconditions:
-        - initial is represented in move notation
-    """
-    move_set = []
-
-    for i in range(len(initial)):
-        for j in range(len(initial[i])):
-            if initial[i][j] == 'white':  # if this is a blank spot
-                copy = initial
-                if red_move:
-                    pass
-                else:
-                    pass
-
-    return move_set
