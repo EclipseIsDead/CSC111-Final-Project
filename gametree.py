@@ -91,21 +91,21 @@ class GameTree:
     def in_previous_moves(self, curr_move: list) -> bool:
         """Check if the move has been played before."""
         if curr_move in self.get_subtrees():
-            return True
-        return False
+            return False
+        return True
 
-    def get_valid_moves(self, initial: list, red_move: bool) -> list:
+    def get_valid_moves(self, initial: list, red_move: bool) -> set:
         """
         This function returns a list of lists with all possible moves calculated when given a board
         state, and whether it is red's move or not.
 
-        THIS FUNCTION NEEDS TO USE PREVIOUS MOVE FUNCTION AND THEN REMOVE PREVIOUS STATES.
+        THIS FUNCTION NEEDS TO USE PREVIOUS MOVE FUNCTION AND THEN REMOVE PREVIOUS STATES FROM POSSIBLE.
 
         Preconditions:
             - initial is represented in move notation
 
         >>> g = GameTree() # this should load a game tree with only the first position
-        >>> len(g.get_valid_moves(STARTING_BOARD, True)) == 5 # this is excluding holder
+        >>> len(g.get_valid_moves(STARTING_BOARD, True)) == 5 # this is excluding holder permutations
         """
         move_set = []
         # create a temporary board with a 2 thick border of 'black' to prevent negative indices
@@ -162,23 +162,22 @@ class GameTree:
 
         # now we scramble the holder pieces in every possible permutation, and add those as well
         for move in move_set:
-            board = np.where(move == 'black', 'white', move)
+            board = np.array(move)
+            board = np.where(board == 'black', 'white', board)
             for i in range(len(board)):
                 for j in range(len(board[i])):
                     if board[i][j] == 'black':
                         pass
 
-        # move_set = set(tuple(x) for x in move_set)
-
         # now check and make sure that no move in the move set has been played before, because
-        # repetitions are not valid moves
+        # repetitions are not valid moves. Also, check that there are no duplicates.
+        final_list = []
         for move in move_set:
-            move = move.tolist()
-            if self.in_previous_moves(move):
-                move_set.remove(move)
+            converted = move.tolist()
+            if not self.in_previous_moves(converted) and converted not in final_list:
+                final_list.append(converted)
 
-        # return the set to make sure there are no duplicated within the move set
-        return move_set
+        return final_list
 
     def _update_red_win_probability(self) -> None:
         pass
