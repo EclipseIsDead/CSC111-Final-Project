@@ -88,11 +88,13 @@ class GameTree:
                 s += subtree._str_indented(depth + 1)
             return s
 
-    def is_previous_move(self, curr_move: list) -> bool:
+    def in_previous_moves(self, curr_move: list) -> bool:
         """Check if the move has been played before."""
-        pass
+        if curr_move in self.get_subtrees():
+            return False
+        return True
 
-    def get_valid_moves(self, initial: list, red_move: bool) -> list:
+    def get_valid_moves(self, initial: list, red_move: bool) -> set:
         """
         This function returns a list of lists with all possible moves calculated when given a board
         state, and whether it is red's move or not.
@@ -160,15 +162,23 @@ class GameTree:
 
         # now we scramble the holder pieces in every possible permutation, and add those as well
         for move in move_set:
-            pass
+            board = np.array(move)
+            board = np.where(board == 'black', 'white', board)
+            for i in range(len(board)):
+                for j in range(len(board[i])):
+                    if board[i][j] == 'black':
+                        pass
+
+        move_set = set(move_set)
 
         # now check and make sure that no move in the move set has been played before, because
         # repetitions are not valid moves
         for move in move_set:
-            if self.is_previous_move(move):
+            if self.in_previous_moves(move):
                 move_set.remove(move)
 
+        # return a set to make sure there are no duplicated within the move set
         return move_set
 
-    def _update_red_win_probability(self):
+    def _update_red_win_probability(self) -> None:
         pass
