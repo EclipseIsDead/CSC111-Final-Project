@@ -1,5 +1,6 @@
 import pygame
 from constants import *
+from typing import Optional
 
 
 class Board:
@@ -7,7 +8,6 @@ class Board:
     def __init__(self) -> None:
         self.board = STARTING_BOARD
         self.previous_boards = []
-        self.selected_piece = None
 
     def draw_board(self, window) -> None:
         window.fill(pygame.color.Color('white'))
@@ -36,7 +36,7 @@ class Board:
 
         self.previous_boards += self.board
 
-    def check_board(self, new_board) -> bool:
+    def check_board(self, new_board: list[list]) -> bool:
         """
         Checks if the next move (therefore the next board state) is not in previous_boards, a list
         containing all previously achieved board states
@@ -46,7 +46,7 @@ class Board:
         else:
             return False
 
-    def make_move(self, new_board, window) -> None:
+    def make_move(self, new_board: list[list], window) -> None:
         if self.check_board(new_board):
             self.board = new_board
             self.draw_pieces(window)
