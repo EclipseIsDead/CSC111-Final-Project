@@ -36,3 +36,51 @@ class RandomPlayer(Player):
         """
         move_set = game.get_valid_moves(initial)
         return random.choice(move_set)
+
+
+class MiniMaxPlayer(Player):
+    """An L Game AI who employs a mini-max strategy."""
+
+    def make_move(self, game: gametree.GameTree, initial: Optional[list]) -> str:
+        """Make a move given the current game.
+
+        previous_move is the opponent player's most recent move, or None if no moves
+        have been made.
+
+        Preconditions:
+            - There is at least one valid move for the given game
+        """
+        move_set = game.get_valid_moves(initial)
+        return random.choice(move_set)
+
+
+class AlphaBetaPlayer(Player):
+    """An L Game AI who employs an alpha-beta pruning strategy."""
+
+    def make_move(self, game: gametree.GameTree, initial: Optional[list]) -> str:
+        """Make a move given the current game.
+
+        previous_move is the opponent player's most recent move, or None if no moves
+        have been made.
+
+        Preconditions:
+            - There is at least one valid move for the given game
+        """
+        move_set = game.get_valid_moves(initial)
+        return random.choice(move_set)
+
+
+class MCSTPlayer(Player):
+    """An L Game AI who employs a Monte Carlo Search Tree strategy."""
+
+    def make_move(self, game: gametree.GameTree, initial: Optional[list]) -> str:
+        """Make a move given the current game.
+
+        previous_move is the opponent player's most recent move, or None if no moves
+        have been made.
+
+        Preconditions:
+            - There is at least one valid move for the given game
+        """
+        move_set = game.get_valid_moves(initial)
+        return random.choice(move_set)
