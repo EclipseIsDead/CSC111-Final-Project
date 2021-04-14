@@ -70,6 +70,22 @@ class MiniMaxPlayer(Player):
         Preconditions:
             - There is at least one valid move for the given game
         """
+        g = self._game_tree
+        """
+        if leaf(n) then return evaluate(n)
+        if n is a max node
+            v := L
+            for each child of n
+                v' := minimax (child)
+                if v' > v, v:= v'
+            return v
+        if n is a min node
+            v := W
+            for each child of n
+                v' := minimax (child)
+                if v' < v, v:= v'
+            return v     
+        """
         raise NotImplementedError
 
 
@@ -93,6 +109,25 @@ class AlphaBetaPlayer(Player):
 
         Preconditions:
             - There is at least one valid move for the given game
+        """
+        g = self._game_tree
+        minimax = MiniMaxPlayer(g)
+        """
+        if leaf(n) or depth=0 return evaluate(n)
+        if n is a max node
+            v := min
+            for each child of n
+                v' := minimax (child,d-1,...,...)
+                if v' > v, v:= v'
+                if v > max return max
+            return v
+        if n is a min node
+            v := max
+            for each child of n
+                v' := minimax (child,d-1,...,...)
+                if v' < v, v:= v'
+                if v < min return min
+            return v
         """
         raise NotImplementedError
 
