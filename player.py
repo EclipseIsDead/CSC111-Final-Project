@@ -25,7 +25,7 @@ class Player:
 class RandomPlayer(Player):
     """An L Game AI whose strategy is always picking a random move."""
 
-    def make_move(self, game: gametree.GameTree, initial: Optional[list]) -> str:
+    def make_move(self, game: gametree.GameTree, initial: Optional[list]) -> list:
         """Make a move given the current game.
 
         previous_move is the opponent player's most recent move, or None if no moves
@@ -41,7 +41,7 @@ class RandomPlayer(Player):
 class MiniMaxPlayer(Player):
     """An L Game AI who employs a mini-max strategy."""
 
-    def make_move(self, game: gametree.GameTree, initial: Optional[list]) -> str:
+    def make_move(self, game: gametree.GameTree, initial: Optional[list]) -> list:
         """Make a move given the current game.
 
         previous_move is the opponent player's most recent move, or None if no moves
@@ -57,7 +57,7 @@ class MiniMaxPlayer(Player):
 class AlphaBetaPlayer(Player):
     """An L Game AI who employs an alpha-beta pruning strategy."""
 
-    def make_move(self, game: gametree.GameTree, initial: Optional[list]) -> str:
+    def make_move(self, game: gametree.GameTree, initial: Optional[list]) -> list:
         """Make a move given the current game.
 
         previous_move is the opponent player's most recent move, or None if no moves
@@ -73,7 +73,7 @@ class AlphaBetaPlayer(Player):
 class MCSTPlayer(Player):
     """An L Game AI who employs a Monte Carlo Search Tree strategy."""
 
-    def make_move(self, game: gametree.GameTree, initial: Optional[list]) -> str:
+    def make_move(self, game: gametree.GameTree, initial: Optional[list]) -> list:
         """Make a move given the current game.
 
         previous_move is the opponent player's most recent move, or None if no moves
