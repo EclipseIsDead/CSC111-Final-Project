@@ -1,4 +1,6 @@
-"""This should hold all players."""
+"""
+This should hold all players.
+"""
 import gametree
 from typing import Optional
 import random
