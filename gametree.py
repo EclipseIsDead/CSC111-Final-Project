@@ -94,7 +94,7 @@ class GameTree:
             return False
         return True
 
-    def get_valid_moves(self, initial: list, red_move: bool) -> set:
+    def get_valid_moves(self, initial: list, move_type: str) -> list:
         """
         This function returns a list of lists with all possible moves calculated when given a board
         state, and whether it is red's move or not.
@@ -105,79 +105,92 @@ class GameTree:
             - initial is represented in move notation
 
         >>> g = GameTree() # this should load a game tree with only the first position
-        >>> len(g.get_valid_moves(STARTING_BOARD, True)) == 5 # this is excluding holder permutations
+        >>> len(g.get_valid_moves(STARTING_BOARD, 'red')) == 5 # this is excluding holder permutations
         """
         move_set = []
-        # create a temporary board with a 2 thick border of 'black' to prevent negative indices
-        temp = np.pad(np.array(initial), pad_width=2, mode='constant', constant_values='black')
+        if move_type == 'black':
+            # do the neutral piece shuffle
+            # now we scramble the holder pieces in every possible permutation, and add those as well
+            temp = np.array(initial)
+            top_and_bottom = [temp.copy(), temp.copy()]  # 2 arrays where the top and bottom neutral pieces are removed respectively
 
-        # there are only 8 permutations of L within each square, treating each square as a corner
-        for i in range(len(temp)):
-            for j in range(len(temp)):  # iterating through the array temp
-                if red_move:
-                    viable = {'white', 'red'}
-                    colour = 'red'
-                    # clear all current reds in the copy of initial board
-                    temp = np.where(temp == 'red', 'white', temp)
-                else:
-                    viable = {'white', 'blue'}
-                    colour = 'blue'
-                    # clear all current blues in the copy of initial board
-                    temp = np.where(temp == 'blue', 'white', temp)
+            # remove the top piece from top
+            for i in range(len(temp)):
+                for j in range(len(temp)):
+                    if temp[i][j] == 'black':
+                        top_and_bottom[0][i][j] = 'white'
+                        break
 
-                if temp[i][j] in viable:
-                    # if this is a viable spot, or red we can simulate an l piece perm
-                    if all(x in viable for x in [temp[i + 1][j], temp[i + 2][j], temp[i][j + 1]]):
-                        copy = temp
-                        copy[i][j] = copy[i + 1][j] = copy[i + 2][j] = copy[i][j + 1] = colour
-                        move_set.append(copy[2:-2, 2:-2])
-                    if all(x in viable for x in [temp[i + 1][j], temp[i][j - 1], temp[i][j - 2]]):
-                        copy = temp
-                        copy[i][j] = copy[i + 1][j] = copy[i][j - 1] = copy[i][j - 2] = colour
-                        move_set.append(copy[2:-2, 2:-2])
-                    if all(x in viable for x in [temp[i - 1][j], temp[i - 2][j], temp[i][j - 1]]):
-                        copy = temp
-                        copy[i][j] = copy[i - 1][j] = copy[i - 2][j] = copy[i][j - 1] = colour
-                        move_set.append(copy[2:-2, 2:-2])
-                    if all(x in viable for x in [temp[i - 1][j], temp[i][j + 1], temp[i][j + 2]]):
-                        copy = temp
-                        copy[i][j] = copy[i - 1][j] = copy[i][j + 1] = copy[i][j + 2] = colour
-                        move_set.append(copy[2:-2, 2:-2])
-                    if all(x in viable for x in [temp[i + 1][j], temp[i + 2][j], temp[i][j - 1]]):
-                        copy = temp
-                        copy[i][j] = copy[i + 1][j] = copy[i + 2][j] = copy[i][j - 1] = colour
-                        move_set.append(copy[2:-2, 2:-2])
-                    if all(x in viable for x in [temp[i + 1][j], temp[i][j + 1], temp[i][j + 2]]):
-                        copy = temp
-                        copy[i][j] = copy[i + 1][j] = copy[i][j + 1] = copy[i][j + 2] = colour
-                        move_set.append(copy[2:-2, 2:-2])
-                    if all(x in viable for x in [temp[i - 1][j], temp[i - 2][j], temp[i][j + 1]]):
-                        copy = temp
-                        copy[i][j] = copy[i - 1][j] = copy[i - 2][j] = copy[i][j + 1] = colour
-                        move_set.append(copy[2:-2, 2:-2])
-                    if all(x in viable for x in [temp[i - 1][j], temp[i][j - 1], temp[i][j - 2]]):
-                        copy = temp
-                        copy[i][j] = copy[i - 1][j] = copy[i][j - 1] = copy[i][j - 2] = colour
-                        move_set.append(copy[2:-2, 2:-2])
+            # remove the bottom piece from bottom
+            for i in range(len(temp)):
+                for j in range(len(temp)):
+                    if top_and_bottom[0][i][j] == 'black':
+                        top_and_bottom[1][i][j] = 'white'
+                        break
 
-        # now we scramble the holder pieces in every possible permutation, and add those as well
-        for move in move_set:
-            board = np.array(move)
-            board = np.where(board == 'black', 'white', board)
-            for i in range(len(board)):
-                for j in range(len(board[i])):
-                    if board[i][j] == 'black':
-                        pass
+            # adds all possible neutral piece configs to move_set (with an extra initial state)
+            for array in top_and_bottom:
+                for i in range(len(temp)):
+                    for j in range(len(temp)):
+                        if array[i][j] == 'white':
+                            copy = array.copy()
+                            copy[i][j] = 'black'
+                            move_set.append(copy.tolist())
+            # end of if branch
+        else:
+            # create a temporary board with a 2 thick border of 'black' to prevent negative indices
+            temp = np.pad(np.array(initial), pad_width=2, mode='constant', constant_values='gray')
 
-        # now check and make sure that no move in the move set has been played before, because
-        # repetitions are not valid moves. Also, check that there are no duplicates.
-        final_list = []
-        for move in move_set:
-            converted = move.tolist()
-            if not self.in_previous_moves(converted) and converted not in final_list:
-                final_list.append(converted)
+            # begin by removing the l-piece in question
+            for i in range(2, len(temp) - 2):
+                for j in range(2, len(temp) - 2):
+                    if temp[i][j] == move_type:
+                        temp[i][j] = 'white'
 
-        return final_list
+            # there are only 8 permutations of L within each square, treating each square as corner
+            for i in range(2, len(temp) - 2):
+                for j in range(2, len(temp) - 2):  # iterating through the array temp
+                    if temp[i][j] == 'white':
+                        # if this is a viable spot, or red we can simulate an l piece perm
+                        if all(x == 'white' for x in [temp[i + 1][j], temp[i + 2][j], temp[i][j + 1]]):
+                            copy = np.copy(temp)
+                            copy[i][j] = copy[i + 1][j] = copy[i + 2][j] = copy[i][j + 1] = move_type
+                            move_set.append(copy[2:-2, 2:-2].tolist())
+                        if all(x == 'white' for x in [temp[i + 1][j], temp[i][j - 1], temp[i][j - 2]]):
+                            copy = np.copy(temp)
+                            copy[i][j] = copy[i + 1][j] = copy[i][j - 1] = copy[i][j - 2] = move_type
+                            move_set.append(copy[2:-2, 2:-2].tolist())
+                        if all(x == 'white' for x in [temp[i - 1][j], temp[i - 2][j], temp[i][j - 1]]):
+                            copy = np.copy(temp)
+                            copy[i][j] = copy[i - 1][j] = copy[i - 2][j] = copy[i][j - 1] = move_type
+                            move_set.append(copy[2:-2, 2:-2].tolist())
+                        if all(x == 'white' for x in [temp[i - 1][j], temp[i][j + 1], temp[i][j + 2]]):
+                            copy = np.copy(temp)
+                            copy[i][j] = copy[i - 1][j] = copy[i][j + 1] = copy[i][j + 2] = move_type
+                            move_set.append(copy[2:-2, 2:-2].tolist())
+                        if all(x == 'white' for x in [temp[i + 1][j], temp[i + 2][j], temp[i][j - 1]]):
+                            copy = np.copy(temp)
+                            copy[i][j] = copy[i + 1][j] = copy[i + 2][j] = copy[i][j - 1] = move_type
+                            move_set.append(copy[2:-2, 2:-2].tolist())
+                        if all(x == 'white' for x in [temp[i + 1][j], temp[i][j + 1], temp[i][j + 2]]):
+                            copy = np.copy(temp)
+                            copy[i][j] = copy[i + 1][j] = copy[i][j + 1] = copy[i][j + 2] = move_type
+                            move_set.append(copy[2:-2, 2:-2].tolist())
+                        if all(x == 'white' for x in [temp[i - 1][j], temp[i - 2][j], temp[i][j + 1]]):
+                            copy = np.copy(temp)
+                            copy[i][j] = copy[i - 1][j] = copy[i - 2][j] = copy[i][j + 1] = move_type
+                            move_set.append(copy[2:-2, 2:-2].tolist())
+                        if all(x == 'white' for x in [temp[i - 1][j], temp[i][j - 1], temp[i][j - 2]]):
+                            copy = np.copy(temp)
+                            copy[i][j] = copy[i - 1][j] = copy[i][j - 1] = copy[i][j - 2] = move_type
+                            move_set.append(copy[2:-2, 2:-2].tolist())
+            # end of else branch
+
+        move_set.remove(initial)  # necessary in all cases coincidentally
+
+        # insert check against previous moves here
+
+        return move_set
 
     def _update_red_win_probability(self) -> None:
         pass
