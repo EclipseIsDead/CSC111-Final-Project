@@ -19,6 +19,9 @@ def calc_row_col(position: tuple) -> tuple:
 
 
 def check_shape(position: tuple, lst: list) -> bool:
+    """
+    Checks the shape of the inputted move with previous moves
+    """
     pass
 
 
@@ -33,19 +36,14 @@ def main() -> None:
     while run:
         clock.tick(FPS)
 
-        grids_so_far = []
-
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
 
-            if len(grids_so_far) == 4:
-                pass
-
             if event.type == pygame.MOUSEBUTTONDOWN:
                 position = pygame.mouse.get_pos()
+                calc_row_col(position)
                 # Need to check the position is L shaped
-                grids_so_far.append(calc_row_col(position))
 
         board.draw_board(WIN)
         board.draw_pieces(WIN)

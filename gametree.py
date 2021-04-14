@@ -97,7 +97,7 @@ class GameTree:
             return False
         return True
 
-    def get_valid_moves(self, initial: list) -> list:
+    def get_valid_moves(self, initial: list[list]) -> list:
         """
         This function returns a list of lists with all possible moves calculated when given a board
         state, and whether it is red's move or not. THIS FUNCTION NEEDS TO USE PREVIOUS MOVE
