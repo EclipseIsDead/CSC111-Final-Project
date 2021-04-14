@@ -1,3 +1,4 @@
+"""We probably aren't using this."""
 import pygame
 from constants import SQUARE_SIZE, BLACK
 
@@ -51,7 +52,7 @@ class PlayerPiece:
         for row_col in self.position:
             x = 0
             y = 0
-            for row_col[1]
+            # for row_col[1]
 
         return list_so_far
 

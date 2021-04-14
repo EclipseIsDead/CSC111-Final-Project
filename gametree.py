@@ -15,11 +15,13 @@ class GameTree:
 
     Instance Attributes:
       - move: the current move (expressed in board notation, which is 4x4 of strings)
-      - is_red_move: True if Red is to make the next move after this, False otherwise
+      - is_red_move: boolean that is True when it is red's move and false if blue's
+      - move_type: string that represents what piece is to be moved
       - red_win_probability: the probability that white is going to win the game
     """
     move: list
     is_red_move: bool
+    move_type: str
     red_win_probability: float
 
     # Private Instance Attributes:
@@ -28,8 +30,8 @@ class GameTree:
     #      move by the current player
     _subtrees: list[GameTree]
 
-    def __init__(self, move: list = STARTING_BOARD,
-                 is_red_move: bool = True, red_win_probability: float = 0.0) -> None:
+    def __init__(self, move: list = STARTING_BOARD, is_red_move: bool = True,
+                 move_type: str = 'red', red_win_probability: float = 0.0) -> None:
         """Initialize a new game tree.
 
         Note that this initializer uses optional arguments, as illustrated below.
@@ -42,6 +44,7 @@ class GameTree:
         """
         self.move = move
         self.is_red_move = is_red_move
+        self.move_type = move_type
         self._subtrees = []
         self.red_win_probability = red_win_probability
 
@@ -49,7 +52,7 @@ class GameTree:
         """Return the subtrees of this game tree."""
         return self._subtrees
 
-    def find_subtree_by_move(self, move: str) -> Optional[GameTree]:
+    def find_subtree_by_move(self, move: list) -> Optional[GameTree]:
         """Return the subtree corresponding to the given move.
 
         Return None if no subtree corresponds to that move.
@@ -94,25 +97,26 @@ class GameTree:
             return False
         return True
 
-    def get_valid_moves(self, initial: list, move_type: str) -> list:
+    def get_valid_moves(self, initial: list) -> list:
         """
         This function returns a list of lists with all possible moves calculated when given a board
-        state, and whether it is red's move or not.
-
-        THIS FUNCTION NEEDS TO USE PREVIOUS MOVE FUNCTION AND THEN REMOVE PREVIOUS STATES FROM POSSIBLE.
+        state, and whether it is red's move or not. THIS FUNCTION NEEDS TO USE PREVIOUS MOVE
+        FUNCTION AND THEN REMOVE PREVIOUS STATES FROM POSSIBLE.
 
         Preconditions:
             - initial is represented in move notation
 
         >>> g = GameTree() # this should load a game tree with only the first position
-        >>> len(g.get_valid_moves(STARTING_BOARD, 'red')) == 5 # this is excluding holder permutations
+        >>> len(g.get_valid_moves(STARTING_BOARD, 'red')) == 5
+        True
         """
         move_set = []
-        if move_type == 'black':
+        if self.move_type == 'black':
             # do the neutral piece shuffle
             # now we scramble the holder pieces in every possible permutation, and add those as well
             temp = np.array(initial)
-            top_and_bottom = [temp.copy(), temp.copy()]  # 2 arrays where the top and bottom neutral pieces are removed respectively
+            # 2 arrays where the top and bottom neutral pieces are removed respectively
+            top_and_bottom = [temp.copy(), temp.copy()]
 
             # remove the top piece from top
             for i in range(len(temp)):
@@ -144,7 +148,7 @@ class GameTree:
             # begin by removing the l-piece in question
             for i in range(2, len(temp) - 2):
                 for j in range(2, len(temp) - 2):
-                    if temp[i][j] == move_type:
+                    if temp[i][j] == self.move_type:
                         temp[i][j] = 'white'
 
             # there are only 8 permutations of L within each square, treating each square as corner
@@ -152,45 +156,71 @@ class GameTree:
                 for j in range(2, len(temp) - 2):  # iterating through the array temp
                     if temp[i][j] == 'white':
                         # if this is a viable spot, or red we can simulate an l piece perm
-                        if all(x == 'white' for x in [temp[i + 1][j], temp[i + 2][j], temp[i][j + 1]]):
+                        if all(x == 'white' for x in
+                               [temp[i + 1][j], temp[i + 2][j], temp[i][j + 1]]):
                             copy = np.copy(temp)
-                            copy[i][j] = copy[i + 1][j] = copy[i + 2][j] = copy[i][j + 1] = move_type
+                            copy[i][j] = copy[i + 1][j] \
+                                = copy[i + 2][j] = copy[i][j + 1] = self.move_type
                             move_set.append(copy[2:-2, 2:-2].tolist())
-                        if all(x == 'white' for x in [temp[i + 1][j], temp[i][j - 1], temp[i][j - 2]]):
+                        if all(x == 'white' for x in
+                               [temp[i + 1][j], temp[i][j - 1], temp[i][j - 2]]):
                             copy = np.copy(temp)
-                            copy[i][j] = copy[i + 1][j] = copy[i][j - 1] = copy[i][j - 2] = move_type
+                            copy[i][j] = copy[i + 1][j] \
+                                = copy[i][j - 1] = copy[i][j - 2] = self.move_type
                             move_set.append(copy[2:-2, 2:-2].tolist())
-                        if all(x == 'white' for x in [temp[i - 1][j], temp[i - 2][j], temp[i][j - 1]]):
+                        if all(x == 'white' for x in
+                               [temp[i - 1][j], temp[i - 2][j], temp[i][j - 1]]):
                             copy = np.copy(temp)
-                            copy[i][j] = copy[i - 1][j] = copy[i - 2][j] = copy[i][j - 1] = move_type
+                            copy[i][j] = copy[i - 1][j] \
+                                = copy[i - 2][j] = copy[i][j - 1] = self.move_type
                             move_set.append(copy[2:-2, 2:-2].tolist())
-                        if all(x == 'white' for x in [temp[i - 1][j], temp[i][j + 1], temp[i][j + 2]]):
+                        if all(x == 'white' for x in
+                               [temp[i - 1][j], temp[i][j + 1], temp[i][j + 2]]):
                             copy = np.copy(temp)
-                            copy[i][j] = copy[i - 1][j] = copy[i][j + 1] = copy[i][j + 2] = move_type
+                            copy[i][j] = copy[i - 1][j] \
+                                = copy[i][j + 1] = copy[i][j + 2] = self.move_type
                             move_set.append(copy[2:-2, 2:-2].tolist())
-                        if all(x == 'white' for x in [temp[i + 1][j], temp[i + 2][j], temp[i][j - 1]]):
+                        if all(x == 'white' for x in
+                               [temp[i + 1][j], temp[i + 2][j], temp[i][j - 1]]):
                             copy = np.copy(temp)
-                            copy[i][j] = copy[i + 1][j] = copy[i + 2][j] = copy[i][j - 1] = move_type
+                            copy[i][j] = copy[i + 1][j] \
+                                = copy[i + 2][j] = copy[i][j - 1] = self.move_type
                             move_set.append(copy[2:-2, 2:-2].tolist())
-                        if all(x == 'white' for x in [temp[i + 1][j], temp[i][j + 1], temp[i][j + 2]]):
+                        if all(x == 'white' for x in
+                               [temp[i + 1][j], temp[i][j + 1], temp[i][j + 2]]):
                             copy = np.copy(temp)
-                            copy[i][j] = copy[i + 1][j] = copy[i][j + 1] = copy[i][j + 2] = move_type
+                            copy[i][j] = copy[i + 1][j] \
+                                = copy[i][j + 1] = copy[i][j + 2] = self.move_type
                             move_set.append(copy[2:-2, 2:-2].tolist())
-                        if all(x == 'white' for x in [temp[i - 1][j], temp[i - 2][j], temp[i][j + 1]]):
+                        if all(x == 'white' for x in
+                               [temp[i - 1][j], temp[i - 2][j], temp[i][j + 1]]):
                             copy = np.copy(temp)
-                            copy[i][j] = copy[i - 1][j] = copy[i - 2][j] = copy[i][j + 1] = move_type
+                            copy[i][j] = copy[i - 1][j] \
+                                = copy[i - 2][j] = copy[i][j + 1] = self.move_type
                             move_set.append(copy[2:-2, 2:-2].tolist())
-                        if all(x == 'white' for x in [temp[i - 1][j], temp[i][j - 1], temp[i][j - 2]]):
+                        if all(x == 'white' for x in
+                               [temp[i - 1][j], temp[i][j - 1], temp[i][j - 2]]):
                             copy = np.copy(temp)
-                            copy[i][j] = copy[i - 1][j] = copy[i][j - 1] = copy[i][j - 2] = move_type
+                            copy[i][j] = copy[i - 1][j] \
+                                = copy[i][j - 1] = copy[i][j - 2] = self.move_type
                             move_set.append(copy[2:-2, 2:-2].tolist())
-            # end of else branch
+            # need to separately check all of these because multiple can be true simultaneously
 
         move_set.remove(initial)  # necessary in all cases coincidentally
 
-        # insert check against previous moves here
+        # this should remove the moves that have already been played
+        for move in move_set:
+            if self.in_previous_moves(move):
+                move_set.remove(move)
 
         return move_set
+
+    def make_move(self, initial: list, move: list) -> None:
+        """This function makes a move."""
+        move_set = self.get_valid_moves(initial)
+        if move in move_set:
+            # make the move?
+            pass
 
     def _update_red_win_probability(self) -> None:
         pass
