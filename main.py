@@ -20,11 +20,19 @@ def calc_row_col(position: tuple) -> tuple:
     return (row, col)
 
 
-def check_shape(position: tuple, lst: list) -> bool:
+def to_board(lst: list[tuple], colour: str) -> list[list]:
     """
-    Checks the shape of the inputted move with previous moves
+    Converts the inputed move into a board
     """
-    pass
+    board = STARTING_BOARD
+    for col in range(COLS):
+        for row in range(ROWS):
+            if board[col][row] == colour:
+                board[col][row] = 'white'
+            if (col, row) in lst:
+                board[col][row] = colour
+
+    return board
 
 
 def main() -> None:
