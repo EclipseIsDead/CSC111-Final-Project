@@ -1,7 +1,8 @@
 """
 This should hold all players.
 """
-import gametree
+from gametree import GameTree
+from board import Board
 from typing import Optional
 import random
 
@@ -11,8 +12,17 @@ class Player:
 
     This class can be subclassed to implement different strategies for playing chess.
     """
+    _game_tree: Optional[GameTree]
 
-    def make_move(self, initial: Optional[list[list]]) -> list:
+    def __init__(self, game_tree: GameTree) -> None:
+        """Initialize this player.
+
+        Preconditions:
+            - game_tree represents a game tree at the initial state (root is '*')
+        """
+        self._game_tree = game_tree
+
+    def make_move(self, new_board: list[list], g: GameTree, board: Board, window) -> None:
         """Make a move given the current game.
 
         previous_move is the opponent player's most recent move, or None if no moves
@@ -21,22 +31,27 @@ class Player:
         Preconditions:
             - There is at least one valid move for the given game
         """
-        raise NotImplementedError
+        if board.check_board(new_board, g):
+            board.board = new_board
+            board.draw_pieces(window)
+        else:
+            print('This is not a legal move.')
 
 
 class RandomPlayer(Player):
     """An L Game AI whose strategy is always picking a random move."""
-    _game_tree: Optional[gametree.GameTree]
+    _game_tree: Optional[GameTree]
 
-    def __init__(self, game_tree: gametree.GameTree) -> None:
+    def __init__(self, game_tree: GameTree) -> None:
         """Initialize this player.
 
         Preconditions:
             - game_tree represents a game tree at the initial state (root is '*')
         """
+        super().__init__(game_tree)
         self._game_tree = game_tree
 
-    def make_move(self, initial: Optional[list[list]]) -> list:
+    def make_move(self, initial: Optional[list[list]]) -> None:
         """Make a move given the current game.
 
         previous_move is the opponent player's most recent move, or None if no moves
@@ -51,17 +66,18 @@ class RandomPlayer(Player):
 
 class MiniMaxPlayer(Player):
     """An L Game AI who employs a mini-max strategy."""
-    _game_tree: Optional[gametree.GameTree]
+    _game_tree: Optional[GameTree]
 
-    def __init__(self, game_tree: gametree.GameTree) -> None:
+    def __init__(self, game_tree: GameTree) -> None:
         """Initialize this player.
 
         Preconditions:
             - game_tree represents a game tree at the initial state (root is '*')
         """
+        super().__init__(game_tree)
         self._game_tree = game_tree
 
-    def make_move(self, previous_move: Optional[list[list]]) -> list:
+    def make_move(self, previous_move: Optional[list[list]]) -> None:
         """Make a move given the current game.
 
         previous_move is the opponent player's most recent move, or None if no moves
@@ -91,17 +107,18 @@ class MiniMaxPlayer(Player):
 
 class AlphaBetaPlayer(Player):
     """An L Game AI who employs an alpha-beta pruning strategy."""
-    _game_tree: Optional[gametree.GameTree]
+    _game_tree: Optional[GameTree]
 
-    def __init__(self, game_tree: gametree.GameTree) -> None:
+    def __init__(self, game_tree: GameTree) -> None:
         """Initialize this player.
 
         Preconditions:
             - game_tree represents a game tree at the initial state (root is '*')
         """
+        super().__init__(game_tree)
         self._game_tree = game_tree
 
-    def make_move(self, initial: Optional[list[list]]) -> list:
+    def make_move(self, initial: Optional[list[list]]) -> None:
         """Make a move given the current game.
 
         previous_move is the opponent player's most recent move, or None if no moves
@@ -134,17 +151,18 @@ class AlphaBetaPlayer(Player):
 
 class MCSTPlayer(Player):
     """An L Game AI who employs a Monte Carlo Search Tree strategy."""
-    _game_tree: Optional[gametree.GameTree]
+    _game_tree: Optional[GameTree]
 
-    def __init__(self, game_tree: gametree.GameTree) -> None:
+    def __init__(self, game_tree: GameTree) -> None:
         """Initialize this player.
 
         Preconditions:
             - game_tree represents a game tree at the initial state (root is '*')
         """
+        super().__init__(game_tree)
         self._game_tree = game_tree
 
-    def make_move(self, initial: Optional[list[list]]) -> list:
+    def make_move(self, initial: Optional[list[list]]) -> None:
         """Make a move given the current game.
 
         previous_move is the opponent player's most recent move, or None if no moves

@@ -29,7 +29,7 @@ class Board:
                 if self.board[col][row] == 'black':
                     rad = SQUARE_SIZE // 2 - LINE_THICC
                     center_pos = (
-                    col * SQUARE_SIZE + SQUARE_SIZE / 2, row * SQUARE_SIZE + SQUARE_SIZE / 2)
+                        col * SQUARE_SIZE + SQUARE_SIZE / 2, row * SQUARE_SIZE + SQUARE_SIZE / 2)
                     pygame.draw.circle(window, pygame.color.Color('black'), center_pos, rad)
                 else:
                     pygame.draw.rect(window, pygame.color.Color(self.board[col][row]),
@@ -49,13 +49,3 @@ class Board:
             return True
         else:
             return False
-
-    def make_move(self, new_board: list[list], g: GameTree, window) -> None:
-        """
-        Makes and draws the move
-        """
-        if self.check_board(new_board, g):
-            self.board = new_board
-            self.draw_pieces(window)
-        else:
-            print('This is not a legal move.')
