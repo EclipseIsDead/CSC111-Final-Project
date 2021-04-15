@@ -40,7 +40,7 @@ class Board:
 
         self.previous_boards += self.board
 
-    def check_board(self, new_board: list[list], g=GameTree) -> bool:
+    def check_board(self, new_board: list[list], g: GameTree) -> bool:
         """
         Checks if the next move (therefore the next board state) is not in previous_boards, a list
         containing all previously achieved board states
