@@ -1,7 +1,6 @@
 import pygame
 from constants import *
 from gametree import GameTree
-from typing import Optional
 
 
 class Board:
@@ -49,3 +48,13 @@ class Board:
             return True
         else:
             return False
+
+    def draw_move(self, new_board: list[list], g: GameTree, window):
+        """
+        This function draws a move.
+        """
+        if self.check_board(new_board, g):
+            self.board = new_board
+            self.draw_pieces(window)
+        else:
+            print('This is not a legal move.')

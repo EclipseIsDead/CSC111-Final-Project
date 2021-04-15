@@ -2,7 +2,6 @@
 This should hold all players.
 """
 from gametree import GameTree
-from board import Board
 from typing import Optional
 import random
 
@@ -22,7 +21,7 @@ class Player:
         """
         self._game_tree = game_tree
 
-    def make_move(self, new_board: list[list], g: GameTree, board: Board, window) -> None:
+    def make_move(self, g: GameTree) -> None:
         """Make a move given the current game.
 
         previous_move is the opponent player's most recent move, or None if no moves
@@ -31,11 +30,7 @@ class Player:
         Preconditions:
             - There is at least one valid move for the given game
         """
-        if board.check_board(new_board, g):
-            board.board = new_board
-            board.draw_pieces(window)
-        else:
-            print('This is not a legal move.')
+        raise NotImplementedError
 
 
 class RandomPlayer(Player):
