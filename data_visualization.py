@@ -7,6 +7,7 @@ import csv
 def print_sample(games_file: str) -> None:
     """
     This is meant to be run on sample_game.csv to quickly look at it in string format.
+    It is key to note that the sample_game is the black piece move, after red/blue pieces have moved
     :param games_file:
     :return:
     """

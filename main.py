@@ -1,6 +1,8 @@
 import pygame
 from constants import *
 from board import Board
+import gametree
+import player
 
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption('The L Game')
@@ -70,4 +72,22 @@ def main() -> None:
 
 
 if __name__ == '__main__':
+    g = gametree.GameTree()
+    ai = input('What player would you like to play against? This is an integer from 1 to 4. \n'
+               '1) Random Player \n'
+               '2) MiniMax Player \n'
+               '3) AlphaBeta Pruning Player \n'
+               '4) Monte Carlo Search Tree Player \n')
+
+    if ai == 1:
+        player = player.RandomPlayer(g)
+    elif ai == 2:
+        player = player.MiniMaxPlayer(g)
+    elif ai == 3:
+        player = player.AlphaBetaPlayer(g)
+    elif ai == 4:
+        player = player.MCSTPlayer(g)
+    else:
+        print('Input not recognized.')
+
     main()

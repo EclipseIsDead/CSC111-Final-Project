@@ -1,4 +1,6 @@
-"""This should hold all players."""
+"""
+This should hold all players.
+"""
 import gametree
 from typing import Optional
 import random
@@ -10,7 +12,7 @@ class Player:
     This class can be subclassed to implement different strategies for playing chess.
     """
 
-    def make_move(self, game: gametree.GameTree, initial: Optional[list]) -> list:
+    def make_move(self, initial: Optional[list[list]]) -> list:
         """Make a move given the current game.
 
         previous_move is the opponent player's most recent move, or None if no moves
@@ -24,8 +26,17 @@ class Player:
 
 class RandomPlayer(Player):
     """An L Game AI whose strategy is always picking a random move."""
+    _game_tree: Optional[gametree.GameTree]
 
-    def make_move(self, game: gametree.GameTree, initial: Optional[list]) -> list:
+    def __init__(self, game_tree: gametree.GameTree) -> None:
+        """Initialize this player.
+
+        Preconditions:
+            - game_tree represents a game tree at the initial state (root is '*')
+        """
+        self._game_tree = game_tree
+
+    def make_move(self, initial: Optional[list[list]]) -> list:
         """Make a move given the current game.
 
         previous_move is the opponent player's most recent move, or None if no moves
@@ -34,14 +45,23 @@ class RandomPlayer(Player):
         Preconditions:
             - There is at least one valid move for the given game
         """
-        move_set = game.get_valid_moves(initial)
+        move_set = self._game_tree.get_valid_moves(initial)
         return random.choice(move_set)
 
 
 class MiniMaxPlayer(Player):
     """An L Game AI who employs a mini-max strategy."""
+    _game_tree: Optional[gametree.GameTree]
 
-    def make_move(self, game: gametree.GameTree, initial: Optional[list]) -> list:
+    def __init__(self, game_tree: gametree.GameTree) -> None:
+        """Initialize this player.
+
+        Preconditions:
+            - game_tree represents a game tree at the initial state (root is '*')
+        """
+        self._game_tree = game_tree
+
+    def make_move(self, previous_move: Optional[list[list]]) -> list:
         """Make a move given the current game.
 
         previous_move is the opponent player's most recent move, or None if no moves
@@ -50,14 +70,38 @@ class MiniMaxPlayer(Player):
         Preconditions:
             - There is at least one valid move for the given game
         """
-        move_set = game.get_valid_moves(initial)
-        return random.choice(move_set)
+        g = self._game_tree
+        """
+        if leaf(n) then return evaluate(n)
+        if n is a max node
+            v := L
+            for each child of n
+                v' := minimax (child)
+                if v' > v, v:= v'
+            return v
+        if n is a min node
+            v := W
+            for each child of n
+                v' := minimax (child)
+                if v' < v, v:= v'
+            return v     
+        """
+        raise NotImplementedError
 
 
 class AlphaBetaPlayer(Player):
     """An L Game AI who employs an alpha-beta pruning strategy."""
+    _game_tree: Optional[gametree.GameTree]
 
-    def make_move(self, game: gametree.GameTree, initial: Optional[list]) -> list:
+    def __init__(self, game_tree: gametree.GameTree) -> None:
+        """Initialize this player.
+
+        Preconditions:
+            - game_tree represents a game tree at the initial state (root is '*')
+        """
+        self._game_tree = game_tree
+
+    def make_move(self, initial: Optional[list[list]]) -> list:
         """Make a move given the current game.
 
         previous_move is the opponent player's most recent move, or None if no moves
@@ -66,14 +110,41 @@ class AlphaBetaPlayer(Player):
         Preconditions:
             - There is at least one valid move for the given game
         """
-        move_set = game.get_valid_moves(initial)
-        return random.choice(move_set)
+        g = self._game_tree
+        minimax = MiniMaxPlayer(g)
+        """
+        if leaf(n) or depth=0 return evaluate(n)
+        if n is a max node
+            v := min
+            for each child of n
+                v' := minimax (child,d-1,...,...)
+                if v' > v, v:= v'
+                if v > max return max
+            return v
+        if n is a min node
+            v := max
+            for each child of n
+                v' := minimax (child,d-1,...,...)
+                if v' < v, v:= v'
+                if v < min return min
+            return v
+        """
+        raise NotImplementedError
 
 
 class MCSTPlayer(Player):
     """An L Game AI who employs a Monte Carlo Search Tree strategy."""
+    _game_tree: Optional[gametree.GameTree]
 
-    def make_move(self, game: gametree.GameTree, initial: Optional[list]) -> list:
+    def __init__(self, game_tree: gametree.GameTree) -> None:
+        """Initialize this player.
+
+        Preconditions:
+            - game_tree represents a game tree at the initial state (root is '*')
+        """
+        self._game_tree = game_tree
+
+    def make_move(self, initial: Optional[list[list]]) -> list:
         """Make a move given the current game.
 
         previous_move is the opponent player's most recent move, or None if no moves
@@ -82,5 +153,4 @@ class MCSTPlayer(Player):
         Preconditions:
             - There is at least one valid move for the given game
         """
-        move_set = game.get_valid_moves(initial)
-        return random.choice(move_set)
+        raise NotImplementedError

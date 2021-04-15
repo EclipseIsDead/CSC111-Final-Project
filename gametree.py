@@ -107,7 +107,7 @@ class GameTree:
             - initial is represented in move notation
 
         >>> g = GameTree() # this should load a game tree with only the first position
-        >>> len(g.get_valid_moves(STARTING_BOARD, 'red')) == 5
+        >>> len(g.get_valid_moves(STARTING_BOARD)) == 5
         True
         """
         move_set = []

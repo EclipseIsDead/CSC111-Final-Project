@@ -50,11 +50,11 @@ class Board:
         else:
             return False
 
-    def make_move(self, new_board: list[list], window) -> None:
+    def make_move(self, new_board: list[list], g: GameTree, window) -> None:
         """
         Makes and draws the move
         """
-        if self.check_board(new_board):
+        if self.check_board(new_board, g):
             self.board = new_board
             self.draw_pieces(window)
         else:
