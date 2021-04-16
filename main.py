@@ -1,8 +1,8 @@
 import pygame
 from constants import *
 from board import Board
-import gametree
-import player
+from gametree import GameTree
+from player import *
 
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption('The L Game')
@@ -35,14 +35,31 @@ def to_board(lst: list[tuple], colour: str) -> list[list]:
     return board
 
 
-def main() -> None:
+def main(ai: str, board: Board) -> None:
     """
     This is the main function that does BLAH BLAH BLAH ur mom lol
+
+    Preconditions:
+     - ai == '1' or ai == '2' or ai == '3' or ai == '4'
     """
-    hold = False
     run = True
     clock = pygame.time.Clock()
-    board = Board()
+    g = GameTree()
+    p1 = Player(g, board)
+    p2 = Player(g, board)
+
+    if ai == '1':
+        p2 = RandomPlayer(g, board)
+    elif ai == '2':
+        p2 = MiniMaxPlayer(g, board)
+    elif ai == '3':
+        p2 = AlphaBetaPlayer(g, board)
+    elif ai == '4':
+        p2 = MCSTPlayer(g, board)
+    else:
+        print('This is not a valid input')
+        run = False
+
     lst_so_far = []
 
     while run:
@@ -54,23 +71,23 @@ def main() -> None:
                 run = False
 
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                hold = True
                 position = pygame.mouse.get_pos()
-                calc_row_col(position)
-                # Need to check the position is L shaped
+                new_tuple = calc_row_col(position)
+
+                if new_tuple not in lst_so_far:
+                    lst_so_far.append(new_tuple)
+
+                if len(lst_so_far) == 4:
+                    # Basically, if the player inputs 4 moves, we 1) Check the input - if its a
+                    # legal move, we follow through and update the board 2) Allow him to move a
+                    # black piece 3) Automove for the AI
+                    new_board = to_board(lst_so_far, 'red')
+                    move_set = g.get_valid_moves(board.board)
+                    p1.make_move(new_board, move_set)
+                    p2.make_move(new_board, move_set)
+                    lst_so_far = []
+
                 print('Pressed')
-
-            elif event.type == pygame.MOUSEBUTTONUP:
-                print('Not Pressed')
-                hold = False
-
-            elif event.type == pygame.MOUSEMOTION:
-                if hold:
-                    position = pygame.mouse.get_pos()
-                    new_tuple = calc_row_col(position)
-
-                    if new_tuple not in lst_so_far:
-                        lst_so_far.append(new_tuple)
 
         board.draw_board(WIN)
         board.draw_pieces(WIN)
@@ -80,22 +97,12 @@ def main() -> None:
 
 
 if __name__ == '__main__':
-    g = gametree.GameTree()
+    g = GameTree()
+    board = Board()
     ai = input('What player would you like to play against? This is an integer from 1 to 4. \n'
                '1) Random Player \n'
                '2) MiniMax Player \n'
                '3) AlphaBeta Pruning Player \n'
                '4) Monte Carlo Search Tree Player \n')
 
-    if ai == 1:
-        player = player.RandomPlayer(g)
-    elif ai == 2:
-        player = player.MiniMaxPlayer(g)
-    elif ai == 3:
-        player = player.AlphaBetaPlayer(g)
-    elif ai == 4:
-        player = player.MCSTPlayer(g)
-    else:
-        print('Input not recognized.')
-
-    main()
+    main(ai, board)

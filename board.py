@@ -11,6 +11,9 @@ class Board:
         self.previous_boards = []
 
     def draw_board(self, window) -> None:
+        """
+        Draws the current board
+        """
         window.fill(pygame.color.Color('white'))
 
         for row in range(ROWS):

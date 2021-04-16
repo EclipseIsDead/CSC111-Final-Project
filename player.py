@@ -3,6 +3,7 @@ This should hold all players.
 """
 from gametree import GameTree
 from typing import Optional
+from board import Board
 import random
 
 
@@ -12,16 +13,18 @@ class Player:
     This class can be subclassed to implement different strategies for playing chess.
     """
     _game_tree: Optional[GameTree]
+    _board: Optional[Board]
 
-    def __init__(self, game_tree: GameTree) -> None:
+    def __init__(self, game_tree: GameTree, board: Board) -> None:
         """Initialize this player.
 
         Preconditions:
             - game_tree represents a game tree at the initial state (root is '*')
         """
         self._game_tree = game_tree
+        self._board = board
 
-    def make_move(self, g: GameTree) -> None:
+    def make_move(self, lst: list[list], valid_moves: list[list]) -> None:
         """Make a move given the current game.
 
         previous_move is the opponent player's most recent move, or None if no moves
@@ -33,20 +36,53 @@ class Player:
         raise NotImplementedError
 
 
-class RandomPlayer(Player):
+class HumanPlayer(Player):
     """An L Game AI whose strategy is always picking a random move."""
     _game_tree: Optional[GameTree]
+    _board: Optional[Board]
 
-    def __init__(self, game_tree: GameTree) -> None:
+    def __init__(self, game_tree: GameTree, board: Board) -> None:
         """Initialize this player.
 
         Preconditions:
             - game_tree represents a game tree at the initial state (root is '*')
         """
-        super().__init__(game_tree)
+        super().__init__(game_tree, board)
         self._game_tree = game_tree
+        self._board = board
 
-    def make_move(self, initial: Optional[list[list]]) -> None:
+    def make_move(self, initial: Optional[list[list]], valid_moves: list[list]) -> None:
+        """Make a move given the current game.
+
+        previous_move is the opponent player's most recent move, or None if no moves
+        have been made.
+
+        Preconditions:
+            - There is at least one valid move for the given game
+        """
+        if initial in valid_moves:
+            pass
+            # Update the board
+        else:
+            print('This is not a valid move.')
+
+
+class RandomPlayer(Player):
+    """An L Game AI whose strategy is always picking a random move."""
+    _game_tree: Optional[GameTree]
+    _board: Optional[Board]
+
+    def __init__(self, game_tree: GameTree, board: Board) -> None:
+        """Initialize this player.
+
+        Preconditions:
+            - game_tree represents a game tree at the initial state (root is '*')
+        """
+        super().__init__(game_tree, board)
+        self._game_tree = game_tree
+        self._board = board
+
+    def make_move(self, initial: Optional[list[list]], valid_moves: list[list]) -> None:
         """Make a move given the current game.
 
         previous_move is the opponent player's most recent move, or None if no moves
@@ -62,17 +98,19 @@ class RandomPlayer(Player):
 class MiniMaxPlayer(Player):
     """An L Game AI who employs a mini-max strategy."""
     _game_tree: Optional[GameTree]
+    _board: Optional[Board]
 
-    def __init__(self, game_tree: GameTree) -> None:
+    def __init__(self, game_tree: GameTree, board: Board) -> None:
         """Initialize this player.
 
         Preconditions:
             - game_tree represents a game tree at the initial state (root is '*')
         """
-        super().__init__(game_tree)
+        super().__init__(game_tree, board)
         self._game_tree = game_tree
+        self._board = board
 
-    def make_move(self, previous_move: Optional[list[list]]) -> None:
+    def make_move(self, previous_move: Optional[list[list]], valid_moves: list[list]) -> None:
         """Make a move given the current game.
 
         previous_move is the opponent player's most recent move, or None if no moves
@@ -103,17 +141,19 @@ class MiniMaxPlayer(Player):
 class AlphaBetaPlayer(Player):
     """An L Game AI who employs an alpha-beta pruning strategy."""
     _game_tree: Optional[GameTree]
+    _board: Optional[Board]
 
-    def __init__(self, game_tree: GameTree) -> None:
+    def __init__(self, game_tree: GameTree, board: Board) -> None:
         """Initialize this player.
 
         Preconditions:
             - game_tree represents a game tree at the initial state (root is '*')
         """
-        super().__init__(game_tree)
+        super().__init__(game_tree, board)
         self._game_tree = game_tree
+        self._board = board
 
-    def make_move(self, initial: Optional[list[list]]) -> None:
+    def make_move(self, initial: Optional[list[list]], valid_moves: list[list]) -> None:
         """Make a move given the current game.
 
         previous_move is the opponent player's most recent move, or None if no moves
@@ -122,8 +162,7 @@ class AlphaBetaPlayer(Player):
         Preconditions:
             - There is at least one valid move for the given game
         """
-        g = self._game_tree
-        minimax = MiniMaxPlayer(g)
+        minimax = MiniMaxPlayer(self._game_tree, self._board)
         """
         if leaf(n) or depth=0 return evaluate(n)
         if n is a max node
@@ -147,17 +186,19 @@ class AlphaBetaPlayer(Player):
 class MCSTPlayer(Player):
     """An L Game AI who employs a Monte Carlo Search Tree strategy."""
     _game_tree: Optional[GameTree]
+    _board: Optional[Board]
 
-    def __init__(self, game_tree: GameTree) -> None:
+    def __init__(self, game_tree: GameTree, board: Board) -> None:
         """Initialize this player.
 
         Preconditions:
             - game_tree represents a game tree at the initial state (root is '*')
         """
-        super().__init__(game_tree)
+        super().__init__(game_tree, board)
         self._game_tree = game_tree
+        self._board = board
 
-    def make_move(self, initial: Optional[list[list]]) -> None:
+    def make_move(self, initial: Optional[list[list]], valid_moves: list[list]) -> None:
         """Make a move given the current game.
 
         previous_move is the opponent player's most recent move, or None if no moves
