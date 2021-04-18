@@ -23,8 +23,6 @@ def main(ai: str) -> None:
         p2 = MiniMaxPlayer(g)
     elif ai == '3':
         p2 = AlphaBetaPlayer(g)
-    elif ai == '4':
-        p2 = MCSTPlayer(g)
     else:
         print('This is not a valid input')
         exit()
@@ -57,7 +55,6 @@ if __name__ == '__main__':
     ai = input('What player would you like to play against? This is an integer from 1 to 4. \n'
                '1) Random Player \n'
                '2) MiniMax Player \n'
-               '3) AlphaBeta Pruning Player \n'
-               '4) Monte Carlo Search Tree Player \n')
+               '3) AlphaBeta Pruning Player \n')
 
     main(ai)
