@@ -39,7 +39,7 @@ class Board:
                 if self.board[row][col] == 'black':
                     rad = SQUARE_SIZE // 2 - LINE_THICC
                     center_pos = (
-                        row * SQUARE_SIZE + SQUARE_SIZE / 2, col * SQUARE_SIZE + SQUARE_SIZE / 2)
+                        col * SQUARE_SIZE + SQUARE_SIZE / 2, row * SQUARE_SIZE + SQUARE_SIZE / 2)
                     pygame.draw.circle(window, pygame.color.Color('black'), center_pos, rad)
                 else:
                     pygame.draw.rect(window, pygame.color.Color(self.board[row][col]),
@@ -175,6 +175,6 @@ class Board:
                     move_set.remove(move)
             # need to separately check all of these because multiple can be true simultaneously
 
-        move_set.remove(self.board)  # necessary in all cases coincidentally
+        # move_set.remove(self.board)  # necessary in all cases coincidentally
 
         return move_set

@@ -21,7 +21,7 @@ def main(ai: str) -> None:
     g = GameTree()
     p1 = HumanPlayer(g)
     p2 = Player(g)
-    board = Board({'red': p1, 'blue': p2})
+    board = Board()
 
     if ai == '1':
         p2 = RandomPlayer(g)
@@ -40,20 +40,28 @@ def main(ai: str) -> None:
 
         valid_moves = board.get_valid_moves()
         new_board = p1.make_move(valid_moves, board.board)
+        board.previous_boards.append(board.board)
+        board.move_type = 'black'
         board.board = new_board
-        board.draw_board(WIN)
         board.draw_pieces(WIN)
         pygame.display.update()
 
-        new_board = p1.select_square(board.board)
+        valid_moves = board.get_valid_moves()
+        coords = p1.select_square(board.board)
+        new_board = p1.move_neutral(valid_moves, board.board, coords)
+        board.previous_boards.append(board.board)
+        board.move_type = 'blue'
+        print(new_board)
         board.board = new_board
-        board.draw_board(WIN)
         board.draw_pieces(WIN)
         pygame.display.update()
 
-        new_board = p1.move_neutral(valid_moves, board.board)
+        valid_moves = board.get_valid_moves()
+        new_board = p2.make_move(valid_moves, board.board)
+        board.previous_boards.append(board.board)
+        board.move_type = 'red'
+        print(new_board)
         board.board = new_board
-        board.draw_board(WIN)
         board.draw_pieces(WIN)
         pygame.display.update()
 
