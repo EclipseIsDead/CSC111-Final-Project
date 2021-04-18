@@ -3,8 +3,9 @@ This should hold all players.
 """
 from gametree import GameTree
 from typing import Optional
-from board import Board
 import random
+from constants import *
+import pygame
 
 
 class Player:
@@ -13,18 +14,16 @@ class Player:
     This class can be subclassed to implement different strategies for playing chess.
     """
     _game_tree: Optional[GameTree]
-    _board: Optional[Board]
 
-    def __init__(self, game_tree: GameTree, board: Board) -> None:
+    def __init__(self, game_tree: GameTree) -> None:
         """Initialize this player.
 
         Preconditions:
             - game_tree represents a game tree at the initial state (root is '*')
         """
         self._game_tree = game_tree
-        self._board = board
 
-    def make_move(self, lst: list[list], valid_moves: list[list]) -> None:
+    def make_move(self, valid_moves: list[list]) -> list[list]:
         """Make a move given the current game.
 
         previous_move is the opponent player's most recent move, or None if no moves
@@ -39,19 +38,26 @@ class Player:
 class HumanPlayer(Player):
     """An L Game AI whose strategy is always picking a random move."""
     _game_tree: Optional[GameTree]
-    _board: Optional[Board]
 
-    def __init__(self, game_tree: GameTree, board: Board) -> None:
+    def calc_row_col(self, position: tuple) -> tuple:
+        """
+        Turns x, y coordinates into row, col
+        """
+        x, y = position
+        col = x // SQUARE_SIZE
+        row = y // SQUARE_SIZE
+        return (row, col)
+
+    def __init__(self, game_tree: GameTree) -> None:
         """Initialize this player.
 
         Preconditions:
             - game_tree represents a game tree at the initial state (root is '*')
         """
-        super().__init__(game_tree, board)
+        super().__init__(game_tree)
         self._game_tree = game_tree
-        self._board = board
 
-    def make_move(self, initial: Optional[list[list]], valid_moves: list[list]) -> None:
+    def make_move(self, valid_moves: list[list]) -> list[tuple]:
         """Make a move given the current game.
 
         previous_move is the opponent player's most recent move, or None if no moves
@@ -60,29 +66,74 @@ class HumanPlayer(Player):
         Preconditions:
             - There is at least one valid move for the given game
         """
-        if initial in valid_moves:
-            pass
-            # Update the board
-        else:
-            print('This is not a valid move.')
+        run = True
+        lst_so_far = new_board = []
+        clock = pygame.time.Clock()
+
+        while run:
+            clock.tick(FPS)
+
+            for event in pygame.event.get():
+
+                if event.type == pygame.QUIT:
+                    run = False
+
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    position = pygame.mouse.get_pos()
+                    new_tuple = self.calc_row_col(position)
+
+                    if new_tuple not in lst_so_far:
+                        lst_so_far.append(new_tuple)
+
+                    if len(lst_so_far) == 4:
+                        run = False
+        return lst_so_far
+
+    def select_square(self) -> tuple:
+        """
+        Select neutral piece
+        """
+        run = True
+        clock = pygame.time.Clock()
+        coords = (0, 0)
+        while run:
+            clock.tick(FPS)
+
+            for event in pygame.event.get():
+
+                if event.type == pygame.QUIT:
+                    run = False
+
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    position = pygame.mouse.get_pos()
+                    coords = self.calc_row_col(position)[0], self.calc_row_col(position)[1]
+                    run = False
+
+        return coords
+
+    def move_neutral(self, row_col: tuple) -> None:
+        """
+        Move neutral piece
+        """
+        run = True
+        clock = pygame.time.Clock()
+        pass
 
 
 class RandomPlayer(Player):
     """An L Game AI whose strategy is always picking a random move."""
     _game_tree: Optional[GameTree]
-    _board: Optional[Board]
 
-    def __init__(self, game_tree: GameTree, board: Board) -> None:
+    def __init__(self, game_tree: GameTree) -> None:
         """Initialize this player.
 
         Preconditions:
             - game_tree represents a game tree at the initial state (root is '*')
         """
-        super().__init__(game_tree, board)
+        super().__init__(game_tree)
         self._game_tree = game_tree
-        self._board = board
 
-    def make_move(self, initial: Optional[list[list]], valid_moves: list[list]) -> None:
+    def make_move(self, valid_moves: list[list]) -> list[list]:
         """Make a move given the current game.
 
         previous_move is the opponent player's most recent move, or None if no moves
@@ -91,26 +142,23 @@ class RandomPlayer(Player):
         Preconditions:
             - There is at least one valid move for the given game
         """
-        move_set = self._game_tree.get_valid_moves(initial)
-        return random.choice(move_set)
+        return random.choice(valid_moves)
 
 
 class MiniMaxPlayer(Player):
     """An L Game AI who employs a mini-max strategy."""
     _game_tree: Optional[GameTree]
-    _board: Optional[Board]
 
-    def __init__(self, game_tree: GameTree, board: Board) -> None:
+    def __init__(self, game_tree: GameTree) -> None:
         """Initialize this player.
 
         Preconditions:
             - game_tree represents a game tree at the initial state (root is '*')
         """
-        super().__init__(game_tree, board)
+        super().__init__(game_tree)
         self._game_tree = game_tree
-        self._board = board
 
-    def make_move(self, previous_move: Optional[list[list]], valid_moves: list[list]) -> None:
+    def make_move(self, valid_moves: list[list]) -> list[list]:
         """Make a move given the current game.
 
         previous_move is the opponent player's most recent move, or None if no moves
@@ -141,19 +189,17 @@ class MiniMaxPlayer(Player):
 class AlphaBetaPlayer(Player):
     """An L Game AI who employs an alpha-beta pruning strategy."""
     _game_tree: Optional[GameTree]
-    _board: Optional[Board]
 
-    def __init__(self, game_tree: GameTree, board: Board) -> None:
+    def __init__(self, game_tree: GameTree) -> None:
         """Initialize this player.
 
         Preconditions:
             - game_tree represents a game tree at the initial state (root is '*')
         """
-        super().__init__(game_tree, board)
+        super().__init__(game_tree)
         self._game_tree = game_tree
-        self._board = board
 
-    def make_move(self, initial: Optional[list[list]], valid_moves: list[list]) -> None:
+    def make_move(self, valid_moves: list[list]) -> list[list]:
         """Make a move given the current game.
 
         previous_move is the opponent player's most recent move, or None if no moves
@@ -162,7 +208,7 @@ class AlphaBetaPlayer(Player):
         Preconditions:
             - There is at least one valid move for the given game
         """
-        minimax = MiniMaxPlayer(self._game_tree, self._board)
+        minimax = MiniMaxPlayer(self._game_tree)
         """
         if leaf(n) or depth=0 return evaluate(n)
         if n is a max node
@@ -186,19 +232,17 @@ class AlphaBetaPlayer(Player):
 class MCSTPlayer(Player):
     """An L Game AI who employs a Monte Carlo Search Tree strategy."""
     _game_tree: Optional[GameTree]
-    _board: Optional[Board]
 
-    def __init__(self, game_tree: GameTree, board: Board) -> None:
+    def __init__(self, game_tree: GameTree) -> None:
         """Initialize this player.
 
         Preconditions:
             - game_tree represents a game tree at the initial state (root is '*')
         """
-        super().__init__(game_tree, board)
+        super().__init__(game_tree)
         self._game_tree = game_tree
-        self._board = board
 
-    def make_move(self, initial: Optional[list[list]], valid_moves: list[list]) -> None:
+    def make_move(self, valid_moves: list[list]) -> list[list]:
         """Make a move given the current game.
 
         previous_move is the opponent player's most recent move, or None if no moves

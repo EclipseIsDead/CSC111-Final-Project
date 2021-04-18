@@ -61,15 +61,19 @@ class Board:
         else:
             return False
 
-    def draw_move(self, new_board: list[list], g: GameTree, window):
+    def to_board(self, lst: list[tuple], colour: str) -> list[list]:
         """
-        This function draws a move.
+        Converts the inputed move into a board
         """
-        if self.check_board(new_board, g):
-            self.board = new_board
-            self.draw_pieces(window)
-        else:
-            print('This is not a legal move.')
+        board = self.board
+        for col in range(COLS):
+            for row in range(ROWS):
+                if board[col][row] == colour:
+                    board[col][row] = 'white'
+                if (col, row) in lst:
+                    board[col][row] = colour
+
+        return board
 
     def get_valid_moves(self) -> list:
         """
