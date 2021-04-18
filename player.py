@@ -23,7 +23,7 @@ class Player:
         """
         self._game_tree = game_tree
 
-    def make_move(self, valid_moves: list[list]) -> list[list]:
+    def make_move(self, valid_moves: list[list], board: list[list]) -> list[list]:
         """Make a move given the current game.
 
         previous_move is the opponent player's most recent move, or None if no moves
@@ -48,6 +48,42 @@ class HumanPlayer(Player):
         row = y // SQUARE_SIZE
         return (row, col)
 
+    def to_board(self, lst: list[tuple], board: list[list], colour: str) -> list[list]:
+        """
+        Converts the inputed move into a board
+        """
+        board = board
+        for col in range(COLS):
+            for row in range(ROWS):
+                if board[col][row] == colour:
+                    board[col][row] = 'white'
+                if (col, row) in lst:
+                    board[col][row] = colour
+
+        return board
+
+    def del_piece(self, tuple: tuple, board: list[list]) -> list[list]:
+        """
+        Deletes a piece and returns the board after
+        """
+        board = board
+        for col in range(COLS):
+            for row in range(ROWS):
+                if board[col][row] == 'black' and row == tuple[0] and col == tuple[1]:
+                    board[col][row] = 'white'
+        return board
+
+    def add_piece(self, tuple: tuple, board: list[list]) -> list[list]:
+        """
+        Deletes a piece and returns the board after
+        """
+        board = board
+        for col in range(COLS):
+            for row in range(ROWS):
+                if board[col][row] == 'white' and row == tuple[0] and col == tuple[1]:
+                    board[col][row] = 'black'
+        return board
+
     def __init__(self, game_tree: GameTree) -> None:
         """Initialize this player.
 
@@ -57,7 +93,7 @@ class HumanPlayer(Player):
         super().__init__(game_tree)
         self._game_tree = game_tree
 
-    def make_move(self, valid_moves: list[list]) -> list[tuple]:
+    def make_move(self, valid_moves: list[list], board: list[list]) -> list[list]:
         """Make a move given the current game.
 
         previous_move is the opponent player's most recent move, or None if no moves
@@ -86,10 +122,16 @@ class HumanPlayer(Player):
                         lst_so_far.append(new_tuple)
 
                     if len(lst_so_far) == 4:
-                        run = False
-        return lst_so_far
+                        new_board = self.to_board(lst_so_far, board, 'red')
+                        if new_board in valid_moves:
+                            board = new_board
+                            run = False
+                        else:
+                            print('This is not a valid move.')
 
-    def select_square(self) -> tuple:
+        return new_board
+
+    def select_square(self, board: list[list]) -> list[list]:
         """
         Select neutral piece
         """
@@ -106,18 +148,37 @@ class HumanPlayer(Player):
 
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     position = pygame.mouse.get_pos()
-                    coords = self.calc_row_col(position)[0], self.calc_row_col(position)[1]
+                    coords = (self.calc_row_col(position)[0], self.calc_row_col(position)[1])
                     run = False
 
-        return coords
+        return self.del_piece(coords, board)
 
-    def move_neutral(self, row_col: tuple) -> None:
+    def move_neutral(self, valid_moves: list[list], board: list[list]) -> list[list]:
         """
         Move neutral piece
         """
         run = True
         clock = pygame.time.Clock()
-        pass
+        new_board = []
+        while run:
+            clock.tick(FPS)
+
+            for event in pygame.event.get():
+
+                if event.type == pygame.QUIT:
+                    run = False
+
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    position = pygame.mouse.get_pos()
+                    coords = (self.calc_row_col(position)[0], self.calc_row_col(position)[1])
+
+                    if self.add_piece(coords, board) in valid_moves:
+                        new_board = self.add_piece(coords, board)
+                        run = False
+                    else:
+                        print('This is not a valid move.')
+
+        return new_board
 
 
 class RandomPlayer(Player):
@@ -133,7 +194,7 @@ class RandomPlayer(Player):
         super().__init__(game_tree)
         self._game_tree = game_tree
 
-    def make_move(self, valid_moves: list[list]) -> list[list]:
+    def make_move(self, valid_moves: list[list], board: list[list]) -> list[list]:
         """Make a move given the current game.
 
         previous_move is the opponent player's most recent move, or None if no moves
@@ -158,7 +219,7 @@ class MiniMaxPlayer(Player):
         super().__init__(game_tree)
         self._game_tree = game_tree
 
-    def make_move(self, valid_moves: list[list]) -> list[list]:
+    def make_move(self, valid_moves: list[list], board: list[list]) -> list[list]:
         """Make a move given the current game.
 
         previous_move is the opponent player's most recent move, or None if no moves
@@ -168,6 +229,7 @@ class MiniMaxPlayer(Player):
             - There is at least one valid move for the given game
         """
         g = self._game_tree
+        pass
         """
         if leaf(n) then return evaluate(n)
         if n is a max node
@@ -199,7 +261,7 @@ class AlphaBetaPlayer(Player):
         super().__init__(game_tree)
         self._game_tree = game_tree
 
-    def make_move(self, valid_moves: list[list]) -> list[list]:
+    def make_move(self, valid_moves: list[list], board: list[list]) -> list[list]:
         """Make a move given the current game.
 
         previous_move is the opponent player's most recent move, or None if no moves
@@ -209,6 +271,7 @@ class AlphaBetaPlayer(Player):
             - There is at least one valid move for the given game
         """
         minimax = MiniMaxPlayer(self._game_tree)
+        pass
         """
         if leaf(n) or depth=0 return evaluate(n)
         if n is a max node

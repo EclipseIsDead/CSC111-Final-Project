@@ -61,20 +61,6 @@ class Board:
         else:
             return False
 
-    def to_board(self, lst: list[tuple], colour: str) -> list[list]:
-        """
-        Converts the inputed move into a board
-        """
-        board = self.board
-        for col in range(COLS):
-            for row in range(ROWS):
-                if board[col][row] == colour:
-                    board[col][row] = 'white'
-                if (col, row) in lst:
-                    board[col][row] = colour
-
-        return board
-
     def get_valid_moves(self) -> list:
         """
         This function returns a list of lists with all possible moves calculated when given a board
@@ -121,7 +107,8 @@ class Board:
             # end of if branch
         else:
             # create a temporary board with a 2 thick border of 'black' to prevent negative indices
-            temp = np.pad(np.array(self.board), pad_width=2, mode='constant', constant_values='gray')
+            temp = np.pad(np.array(self.board), pad_width=2, mode='constant',
+                          constant_values='gray')
 
             # begin by removing the l-piece in question
             for i in range(2, len(temp) - 2):
@@ -198,12 +185,14 @@ class Board:
 
         move_set = self.get_valid_moves()
         while len(move_set) != 0:
-            # finds the player for this turn
+            # Finds the player for this turn
             curr_player = self.players[self.move_type]
-            # receives l-move from player
-            l_move = curr_player.make_move(move_set)
-            # changes board parameters to match move made by player and updates visual
-            self.board = l_move
+            # Receives L-move coords from player
+            L_move = curr_player.make_move(move_set, self.board)
+            # Converts L-move coord to a new board
+
+
+
             self.move_type = 'black'
             self.draw_pieces(window)
             # determines possible neutral-move set and receives neutral-move from player

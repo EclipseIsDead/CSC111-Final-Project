@@ -33,21 +33,11 @@ def main(ai: str) -> None:
         pygame.display.update()
 
         valid_moves = board.get_valid_moves()
-        new_board = p1.make_move(valid_moves)
+        new_board = p1.make_move(valid_moves, board.board)
         board.board = new_board
         board.draw_board(WIN)
         board.draw_pieces(WIN)
         pygame.display.update()
-
-        yn = input('Would you like to move a neutral (Black) piece? \n'
-                   'Press "Y" for Yes and "N" for No.')
-        if yn == 'Y':
-            row, col = p1.select_square()[0], p1.select_square()[1]
-            if board.board[col][row] == 'black':
-                print('True')
-                p1.move_neutral((row, col))
-            else:
-                print('This is not a neutral piece.')
 
 
 if __name__ == '__main__':
