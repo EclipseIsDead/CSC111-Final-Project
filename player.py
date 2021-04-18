@@ -173,7 +173,7 @@ class HumanPlayer(Player):
 
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     position = pygame.mouse.get_pos()
-                    coords =  self.calc_row_col(position)
+                    coords = self.calc_row_col(position)
                     run = False
 
                     #if self.add_piece(coords, board) in valid_moves:

@@ -1,8 +1,14 @@
 from board import Board
 from player import *
+from gametree import GameTree
 
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption('The L Game')
+
+
+def gen_gametree(depth: int) -> GameTree:
+    """Dub"""
+    raise NotImplementedError
 
 
 def main(ai: str) -> None:

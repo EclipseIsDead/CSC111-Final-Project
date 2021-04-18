@@ -67,7 +67,7 @@ class GameTree:
         """Add a subtree to this game tree."""
         self._subtrees.append(subtree)
         for subtree in subtree.get_subtrees():
-            subtree._update_red_win_probability(subtree.move)
+            subtree._update_red_win_probability()
 
     def __str__(self) -> str:
         """Return a string representation of this tree.
@@ -223,10 +223,10 @@ class GameTree:
             # make the move?
             pass
 
-    def _update_red_win_probability(self, initial: list[list]) -> None:
-        if self.is_red_move and len(self.get_valid_moves(initial)) == 0:
-            self.red_win_probability = -1000.0
-        elif self.is_red_move and len(self.get_valid_moves(initial)) != 0:
-            self.red_win_probability = 1000.0
+    def _update_red_win_probability(self) -> None:
+        if self.is_red_move and len(self.get_valid_moves(self.move)) == 0:
+            self.red_win_probability = -1.0
+        elif self.is_red_move and len(self.get_valid_moves(self.move)) != 0:
+            self.red_win_probability = 1.0
         else:
             self.red_win_probability = 0.0
