@@ -11,7 +11,7 @@ import pygame
 class Player:
     """An abstract class representing an L Game AI.
 
-    This class can be subclassed to implement different strategies for playing chess.
+    This class can be subclassed to implement different strategies for playing the L Game.
     """
     _game_tree: Optional[GameTree]
 
@@ -38,6 +38,15 @@ class Player:
 class HumanPlayer(Player):
     """An L Game AI whose strategy is always picking a random move."""
     _game_tree: Optional[GameTree]
+
+    def __init__(self, game_tree: GameTree) -> None:
+        """Initialize this player.
+
+        Preconditions:
+            - game_tree represents a game tree at the initial state (root is '*')
+        """
+        super().__init__(game_tree)
+        self._game_tree = game_tree
 
     def calc_row_col(self, position: tuple) -> tuple:
         """
@@ -83,15 +92,6 @@ class HumanPlayer(Player):
                 if board[col][row] == 'white' and row == tuple[0] and col == tuple[1]:
                     board[col][row] = 'black'
         return board
-
-    def __init__(self, game_tree: GameTree) -> None:
-        """Initialize this player.
-
-        Preconditions:
-            - game_tree represents a game tree at the initial state (root is '*')
-        """
-        super().__init__(game_tree)
-        self._game_tree = game_tree
 
     def make_move(self, valid_moves: list[list], board: list[list]) -> list[list]:
         """Make a move given the current game.

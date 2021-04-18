@@ -222,5 +222,10 @@ class GameTree:
             # make the move?
             pass
 
-    def _update_red_win_probability(self) -> None:
-        pass
+    def _update_red_win_probability(self, initial: list[list]) -> None:
+        if self.is_red_move and len(self.get_valid_moves(initial)) == 0:
+            self.red_win_probability = -1000.0
+        elif self.is_red_move and len(self.get_valid_moves(initial)) != 0:
+            self.red_win_probability = 1000.0
+        else:
+            self.red_win_probability = 0.0
