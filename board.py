@@ -1,22 +1,21 @@
 import pygame
-import player
 import numpy as np
 from constants import *
-from gametree import GameTree
 from typing import Any, Optional
 
 
 class Board:
     """This is the actual board object."""
 
-    def __init__(self) -> None:
+    def __init__(self, board: list = STARTING_BOARD, previous_boards: list = [], is_red_move: bool = True,
+                 move_type: str = 'red') -> None:
         """
         Init board function, players['red'] is the red player, players['blue'] is the blue player
         """
-        self.board = STARTING_BOARD
-        self.previous_boards = []
-        self.is_red_move = True
-        self.move_type = 'red'
+        self.board = board
+        self.previous_boards = previous_boards
+        self.is_red_move = is_red_move
+        self.move_type = move_type
 
     def draw_board(self, window) -> None:
         """
@@ -50,16 +49,6 @@ class Board:
 
         self.previous_boards += self.board
 
-    def check_board(self, new_board: list[list], g: GameTree) -> bool:
-        """
-        Checks if the next move (therefore the next board state) is not in previous_boards, a list
-        containing all previously achieved board states
-        """
-        if new_board in g.get_valid_moves(new_board):
-            return True
-        else:
-            return False
-
     def get_valid_moves(self) -> list:
         """
         This function returns a list of lists with all possible moves calculated when given a board
@@ -69,31 +58,30 @@ class Board:
         Preconditions:
             - initial is represented in move notation
 
-        >>> g = Board({'red': player.RandomPlayer, 'blue': player.RandomPlayer}) # this should load a game tree with only the first position
+        >>> g = Board() # this should load a game tree with only the first position
         >>> len(g.get_valid_moves()) == 5
         True
         """
         move_set = []
+        keep_searching = True
         if self.move_type == 'black':
             # do the neutral piece shuffle
             # now we scramble the holder pieces in every possible permutation, and add those as well
             temp = np.array(self.board)
             # 2 arrays where the top and bottom neutral pieces are removed respectively
             top_and_bottom = [temp.copy(), temp.copy()]
-
             # remove the top piece from top
             for i in range(len(temp)):
                 for j in range(len(temp)):
-                    if temp[i][j] == 'black':
+                    if temp[i][j] == 'black' and keep_searching:
                         top_and_bottom[0][i][j] = 'white'
-                        break
+                        keep_searching = False
 
             # remove the bottom piece from bottom
             for i in range(len(temp)):
                 for j in range(len(temp)):
                     if top_and_bottom[0][i][j] == 'black':
                         top_and_bottom[1][i][j] = 'white'
-                        break
 
             # adds all possible neutral piece configs to move_set (with an extra initial state)
             for array in top_and_bottom:
@@ -168,13 +156,11 @@ class Board:
                             copy[i][j] = copy[i - 1][j] \
                                 = copy[i][j - 1] = copy[i][j - 2] = self.move_type
                             move_set.append(copy[2:-2, 2:-2].tolist())
-
             # this should remove the moves that have already been played
             for move in move_set:
                 if move in self.previous_boards:
                     move_set.remove(move)
             # need to separately check all of these because multiple can be true simultaneously
-
-        move_set.remove(self.board)  # necessary in all cases coincidentally
+        move_set.remove(self.board)
 
         return move_set
