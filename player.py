@@ -23,7 +23,7 @@ class Player:
         """
         self._game_tree = game_tree
 
-    def make_move(self, valid_moves: list[list], board: list[list]) -> list[list]:
+    def make_move(self, valid_moves: list[list]) -> list[list]:
         """Make a move given the current game.
 
         previous_move is the opponent player's most recent move, or None if no moves
@@ -185,7 +185,7 @@ class RandomPlayer(Player):
         super().__init__(game_tree)
         self._game_tree = game_tree
 
-    def make_move(self, valid_moves: list[list], board: list[list]) -> list[list]:
+    def make_move(self, valid_moves: list[list]) -> list[list]:
         """Make a move given the current game.
 
         previous_move is the opponent player's most recent move, or None if no moves
@@ -198,7 +198,11 @@ class RandomPlayer(Player):
 
 
 class MiniMaxPlayer(Player):
-    """An L Game AI who employs a mini-max strategy."""
+    """
+    An L Game AI who employs a mini-max strategy.
+
+    Red is the maximizer, blue is the minimizer.
+    """
     _game_tree: Optional[GameTree]
 
     def __init__(self, game_tree: GameTree) -> None:
@@ -210,7 +214,7 @@ class MiniMaxPlayer(Player):
         super().__init__(game_tree)
         self._game_tree = game_tree
 
-    def make_move(self, valid_moves: list[list], board: list[list]) -> list[list]:
+    def make_move(self, valid_moves: list[list]) -> list[list]:
         """Make a move given the current game.
 
         previous_move is the opponent player's most recent move, or None if no moves
@@ -252,7 +256,7 @@ class AlphaBetaPlayer(Player):
         super().__init__(game_tree)
         self._game_tree = game_tree
 
-    def make_move(self, valid_moves: list[list], board: list[list]) -> list[list]:
+    def make_move(self, valid_moves: list[list]) -> list[list]:
         """Make a move given the current game.
 
         previous_move is the opponent player's most recent move, or None if no moves
