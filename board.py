@@ -9,7 +9,7 @@ from typing import Any, Optional
 class Board:
     """This is the actual board object."""
 
-    def __init__(self, players: dict[str, Any]) -> None:
+    def __init__(self) -> None:
         """
         Init board function, players['red'] is the red player, players['blue'] is the blue player
         """
@@ -17,7 +17,6 @@ class Board:
         self.previous_boards = []
         self.is_red_move = True
         self.move_type = 'red'
-        self.players = players
 
     def draw_board(self, window) -> None:
         """
@@ -169,45 +168,13 @@ class Board:
                             copy[i][j] = copy[i - 1][j] \
                                 = copy[i][j - 1] = copy[i][j - 2] = self.move_type
                             move_set.append(copy[2:-2, 2:-2].tolist())
+
+            # this should remove the moves that have already been played
+            for move in move_set:
+                if move in self.previous_boards:
+                    move_set.remove(move)
             # need to separately check all of these because multiple can be true simultaneously
 
         move_set.remove(self.board)  # necessary in all cases coincidentally
 
-        # this should remove the moves that have already been played
-        for move in move_set:
-            if move in self.previous_boards:
-                move_set.remove(move)
-
         return move_set
-
-    def play_game(self, window):
-        """ This function plays the game. """
-
-        move_set = self.get_valid_moves()
-        while len(move_set) != 0:
-            # Finds the player for this turn
-            curr_player = self.players[self.move_type]
-            # Receives L-move coords from player
-            L_move = curr_player.make_move(move_set, self.board)
-            # Converts L-move coord to a new board
-
-
-
-            self.move_type = 'black'
-            self.draw_pieces(window)
-            # determines possible neutral-move set and receives neutral-move from player
-            move_set = self.get_valid_moves()
-            neutral_move = curr_player.make_move(move_set)
-            # changes board parameters to match move made by player and updates visual
-            self.board = neutral_move
-            self.is_red_move = not self.is_red_move
-            if self.is_red_move:
-                self.move_type = 'red'
-            else:
-                self.move_type = 'blue'
-            self.draw_pieces(window)
-            # determines possible l-moves for next turn to check if the game can continue
-            move_set = self.get_valid_moves()
-
-        # Once the while loop ends, we declare the winner to be whoever's turn it is not right now
-        # After this, we can return the total move list as well as who won to make game trees
