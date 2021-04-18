@@ -227,28 +227,3 @@ class AlphaBetaPlayer(Player):
             return v
         """
         raise NotImplementedError
-
-
-class MCSTPlayer(Player):
-    """An L Game AI who employs a Monte Carlo Search Tree strategy."""
-    _game_tree: Optional[GameTree]
-
-    def __init__(self, game_tree: GameTree) -> None:
-        """Initialize this player.
-
-        Preconditions:
-            - game_tree represents a game tree at the initial state (root is '*')
-        """
-        super().__init__(game_tree)
-        self._game_tree = game_tree
-
-    def make_move(self, valid_moves: list[list]) -> list[list]:
-        """Make a move given the current game.
-
-        previous_move is the opponent player's most recent move, or None if no moves
-        have been made.
-
-        Preconditions:
-            - There is at least one valid move for the given game
-        """
-        raise NotImplementedError
