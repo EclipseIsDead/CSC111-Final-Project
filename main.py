@@ -39,6 +39,18 @@ def main(ai: str) -> None:
         board.draw_pieces(WIN)
         pygame.display.update()
 
+        new_board = p1.select_square(board.board)
+        board.board = new_board
+        board.draw_board(WIN)
+        board.draw_pieces(WIN)
+        pygame.display.update()
+
+        new_board = p1.move_neutral(valid_moves, board.board)
+        board.board = new_board
+        board.draw_board(WIN)
+        board.draw_pieces(WIN)
+        pygame.display.update()
+
 
 if __name__ == '__main__':
     g = GameTree()

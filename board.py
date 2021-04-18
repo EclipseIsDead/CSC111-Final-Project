@@ -35,17 +35,17 @@ class Board:
     def draw_pieces(self, window) -> None:
         """We do this later"""
 
-        for col in range(COLS):
-            for row in range(ROWS):
-                if self.board[col][row] == 'black':
+        for row in range(ROWS):
+            for col in range(COLS):
+                if self.board[row][col] == 'black':
                     rad = SQUARE_SIZE // 2 - LINE_THICC
                     center_pos = (
-                        col * SQUARE_SIZE + SQUARE_SIZE / 2, row * SQUARE_SIZE + SQUARE_SIZE / 2)
+                        row * SQUARE_SIZE + SQUARE_SIZE / 2, col * SQUARE_SIZE + SQUARE_SIZE / 2)
                     pygame.draw.circle(window, pygame.color.Color('black'), center_pos, rad)
                 else:
-                    pygame.draw.rect(window, pygame.color.Color(self.board[col][row]),
-                                     (row * SQUARE_SIZE + LINE_THICC,
-                                      col * SQUARE_SIZE + LINE_THICC,
+                    pygame.draw.rect(window, pygame.color.Color(self.board[row][col]),
+                                     (col * SQUARE_SIZE + LINE_THICC,
+                                      row * SQUARE_SIZE + LINE_THICC,
                                       SQUARE_SIZE - (2 * LINE_THICC),
                                       SQUARE_SIZE - (2 * LINE_THICC)), 0)
 

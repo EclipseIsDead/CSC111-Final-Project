@@ -11,7 +11,7 @@ import pygame
 class Player:
     """An abstract class representing an L Game AI.
 
-    This class can be subclassed to implement different strategies for playing the L Game.
+    This class can be subclassed to implement different strategies for playing chess.
     """
     _game_tree: Optional[GameTree]
 
@@ -39,18 +39,9 @@ class HumanPlayer(Player):
     """An L Game AI whose strategy is always picking a random move."""
     _game_tree: Optional[GameTree]
 
-    def __init__(self, game_tree: GameTree) -> None:
-        """Initialize this player.
-
-        Preconditions:
-            - game_tree represents a game tree at the initial state (root is '*')
-        """
-        super().__init__(game_tree)
-        self._game_tree = game_tree
-
     def calc_row_col(self, position: tuple) -> tuple:
         """
-        Turns x, y coordinates into row, col
+        Turns x, y coordinates into (row, col)
         """
         x, y = position
         col = x // SQUARE_SIZE
@@ -61,37 +52,48 @@ class HumanPlayer(Player):
         """
         Converts the inputed move into a board
         """
-        board = board
-        for col in range(COLS):
-            for row in range(ROWS):
-                if board[col][row] == colour:
-                    board[col][row] = 'white'
-                if (col, row) in lst:
-                    board[col][row] = colour
+        new_board = board
+        for row in range(ROWS):
+            for col in range(COLS):
+                if board[row][col] == colour:
+                    new_board[row][col] = 'white'
+                if (row, col) in lst:
+                    new_board[row][col] = colour
 
-        return board
+        return new_board
 
     def del_piece(self, tuple: tuple, board: list[list]) -> list[list]:
         """
         Deletes a piece and returns the board after
         """
-        board = board
-        for col in range(COLS):
-            for row in range(ROWS):
-                if board[col][row] == 'black' and row == tuple[0] and col == tuple[1]:
-                    board[col][row] = 'white'
-        return board
+        new_board = board
+        for row in range(ROWS):
+            for col in range(COLS):
+                if board[row][col] == 'black' and (row, col) == tuple:
+                    new_board[row][col] = 'white'
+        return new_board
 
     def add_piece(self, tuple: tuple, board: list[list]) -> list[list]:
         """
-        Deletes a piece and returns the board after
+        Places a piece and returns the board after
         """
-        board = board
-        for col in range(COLS):
-            for row in range(ROWS):
-                if board[col][row] == 'white' and row == tuple[0] and col == tuple[1]:
-                    board[col][row] = 'black'
-        return board
+        new_board = board
+        for row in range(ROWS):
+            for col in range(COLS):
+                if board[row][col] == 'white' and (row, col) == tuple:
+                    new_board[row][col] = 'black'
+                else:
+                    print('x')
+        return new_board
+
+    def __init__(self, game_tree: GameTree) -> None:
+        """Initialize this player.
+
+        Preconditions:
+            - game_tree represents a game tree at the initial state (root is '*')
+        """
+        super().__init__(game_tree)
+        self._game_tree = game_tree
 
     def make_move(self, valid_moves: list[list], board: list[list]) -> list[list]:
         """Make a move given the current game.
@@ -148,7 +150,7 @@ class HumanPlayer(Player):
 
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     position = pygame.mouse.get_pos()
-                    coords = (self.calc_row_col(position)[0], self.calc_row_col(position)[1])
+                    coords = self.calc_row_col(position)
                     run = False
 
         return self.del_piece(coords, board)
@@ -159,7 +161,8 @@ class HumanPlayer(Player):
         """
         run = True
         clock = pygame.time.Clock()
-        new_board = []
+        new_board = board
+        coords = (0,0)
         while run:
             clock.tick(FPS)
 
@@ -170,15 +173,16 @@ class HumanPlayer(Player):
 
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     position = pygame.mouse.get_pos()
-                    coords = (self.calc_row_col(position)[0], self.calc_row_col(position)[1])
+                    coords =  self.calc_row_col(position)
+                    run = False
 
-                    if self.add_piece(coords, board) in valid_moves:
-                        new_board = self.add_piece(coords, board)
-                        run = False
-                    else:
-                        print('This is not a valid move.')
+                    #if self.add_piece(coords, board) in valid_moves:
+                     #   new_board = self.add_piece(coords, board)
+                      #  run = False
+                    #else:
+                     #   print('This is not a valid move.')
 
-        return new_board
+        return self.add_piece(coords, board)
 
 
 class RandomPlayer(Player):
