@@ -26,6 +26,7 @@ def battle_royal(player1: Player, player2: Player) -> list:
     """
     This function has to AI's play against each other and plots the result of their games.
     """
+<<<<<<< HEAD
     n = 100
     win_list = []
     player_access = {'red': player1, 'blue': player2}
@@ -57,3 +58,6 @@ def battle_royal(player1: Player, player2: Player) -> list:
         else:
             win_list.append(1)
     return win_list
+=======
+
+>>>>>>> main
