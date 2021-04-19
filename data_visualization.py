@@ -5,8 +5,7 @@ This file is for visualizing the data and for getting AI to play against each ot
 This file is Copyright (c) 2021 Siddarth Dagar, Daniel Zhu, and Bradley Mathi.
 """
 import csv
-from typing import Any
-
+import plotly.express as plt
 from player import *
 from typing import Any
 
@@ -40,9 +39,9 @@ def battle_royale(player1: Any, player2: Any) -> list:
             # Finds the player for this turn
             curr_player = player_access[new_game_board.move_type]
             # Receives L-move coords from player
-            L_move = curr_player.make_move(new_game_board)
+            l_move = curr_player.make_move(new_game_board)
             # Converts L-move coord to a new board
-            new_game_board.board = L_move
+            new_game_board.board = l_move
             new_game_board.move_type = 'black'
             # determines possible neutral-move set and receives neutral-move from player
             move_set = new_game_board.get_valid_moves()
@@ -61,3 +60,52 @@ def battle_royale(player1: Any, player2: Any) -> list:
         else:
             win_list.append(1)
     return win_list
+
+
+def plot_winrates(wins: list) -> None:
+    """
+    This function should use battle_royale results to plot results of the win rates.
+
+    Assume wins is the list returned by battle_royale. A 1 corresponds to player1's win.
+    """
+    figure = plt.scatter(x=[x for x in range(1, len(wins) + 1)], y=wins)
+    figure.update_layout(
+        title="Win Percents",
+        xaxis_title="Games Played",
+        yaxis_title="Winner",
+    )
+
+    figure.show()
+
+
+def plot_winpercent(wins: list) -> None:
+    """
+    This function should use battle_royale results to plot results of the win rates as percents of
+    the total.
+
+    Assume wins is the list returned by battle_royale. A 1 corresponds to player1's win.
+    """
+    figure = plt.scatter(x=[x for x in range(1, len(wins) + 1)],
+                         y=cumulated(wins))
+    figure.update_layout(
+        title="Winrates",
+        xaxis_title="Games Played",
+        yaxis_title="Percentage of games won by Player 1",
+    )
+
+    figure.show()
+
+
+def cumulated(lst: list) -> list:
+    """
+    This function should return the cumulative sum divided by 100 at each index of the list lst.
+
+    Precondition:
+        - lst != []
+    """
+    new_lst = []
+    sum = 0
+    for item in lst:
+        sum += item
+        new_lst.append(sum/100)
+    return new_lst

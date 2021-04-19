@@ -1,9 +1,12 @@
 """
 CSC111 2021 Final Project - The L Game
 
-This file stores all the player classes and their respective functions
+This file stores all the player classes and their respective functions. The template for this code
+is taken from Assignment 2, specifically the abstract Player class. Credit is given to David Liu,
 
-This file is Copyright (c) 2021 Siddarth Dagar, Daniel Zhu, and Bradley Mathi.
+Liu, David (2021). Assignment 2. CSC111: Trees, Chess, and Artificial Intelligence.
+University of Toronto, St. George campus. Synchronous. March 6, 2021.
+
 """
 from gametree import *
 from typing import Optional

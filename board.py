@@ -8,17 +8,17 @@ This file is Copyright (c) 2021 Siddarth Dagar, Daniel Zhu, and Bradley Mathi.
 import pygame
 import numpy as np
 from constants import *
-from typing import Any, Optional
 
 
 class Board:
     """This is the actual board object.
+
     Instance Attributes:
         - board = The board state of the board, stored as a nested list
         - previous_boards = A list containing all the previous boards
         - is_red_move = A boolean starting wether it is red's move or not
-        - move_type = A string stating what board piece is being moved. 'red' refers to the red L piece
-                  'blue' refers to the blue L piece, and 'black' refers to a neutral piece
+        - move_type = A string stating what board piece is being moved. 'red' refers to the red L
+        piece 'blue' refers to the blue L piece, and 'black' refers to a neutral piece
     """
     board = list
     previous_boards = list
