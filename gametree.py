@@ -35,9 +35,9 @@ class GameTree:
         Note that this initializer uses optional arguments, as illustrated below.
 
         >>> game = GameTree()
-        >>> game.move == STARTING_BOARD
+        >>> game.board.board == STARTING_BOARD
         True
-        >>> game.is_red_move
+        >>> game.board.is_red_move
         True
         """
         self.board = board
@@ -54,7 +54,7 @@ class GameTree:
         Return None if no subtree corresponds to that move.
         """
         for subtree in self._subtrees:
-            if subtree.move == move:
+            if subtree.board.board == move:
                 return subtree
 
         return None
@@ -75,11 +75,11 @@ class GameTree:
 
         The indentation level is specified by the <depth> parameter.
         """
-        if self.is_red_move:
+        if self.board.is_red_move:
             turn_desc = "Red's move"
         else:
             turn_desc = "Blue's move"
-        move_desc = f'{self.move} -> {turn_desc}\n'
+        move_desc = f'{self.board.board} -> {turn_desc}\n'
         s = '  ' * depth + move_desc
         if self._subtrees == []:
             return s
