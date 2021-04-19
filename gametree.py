@@ -4,7 +4,6 @@ This is the main game tree python file. This stores the tree, game tree and othe
 from __future__ import annotations
 from typing import Optional
 from constants import STARTING_BOARD
-import numpy as np
 from board import Board
 
 
@@ -18,10 +17,10 @@ class GameTree:
       - move: the current move (expressed in board notation, which is 4x4 of strings)
       - is_red_move: boolean that is True when it is red's move and false if blue's
       - move_type: string that represents what piece is to be moved
-      - red_win_probability: the probability that white is going to win the game
+      - score: the probability that white is going to win the game
     """
     board: Board
-    red_win_probability: float
+    score: float
 
     # Private Instance Attributes:
     #  - _subtrees:
@@ -29,7 +28,7 @@ class GameTree:
     #      move by the current player
     _subtrees: list[GameTree]
 
-    def __init__(self, board: Board = Board(), red_win_probability: float = 0.0) -> None:
+    def __init__(self, board: Board = Board(), score: float = 0.0) -> None:
         """Initialize a new game tree.
 
         Note that this initializer uses optional arguments, as illustrated below.
@@ -42,7 +41,7 @@ class GameTree:
         """
         self.board = board
         self._subtrees = []
-        self.red_win_probability = red_win_probability
+        self.score = score
 
     def get_subtrees(self) -> list[GameTree]:
         """Return the subtrees of this game tree."""
@@ -63,7 +62,7 @@ class GameTree:
         """Add a subtree to this game tree."""
         self._subtrees.append(subtree)
         for subtree in subtree.get_subtrees():
-            subtree._update_red_win_probability()
+            subtree._update_score()
 
     def __str__(self) -> str:
         """Return a string representation of this tree.
@@ -94,13 +93,13 @@ class GameTree:
             return True
         return False
 
-    def _update_red_win_probability(self) -> None:
-        if self.board.is_red_move and len(self.board.get_valid_moves()) == 0:
-            self.red_win_probability = -1.0
-        elif self.board.is_red_move and len(self.board.get_valid_moves()) != 0:
-            self.red_win_probability = 1.0
+    def _update_score(self) -> None:
+        if self.board.is_red_move and self.get_subtrees() != []:
+            self.score = max(subtree.score for subtree in self.get_subtrees())
+        elif not self.board.is_red_move and self.get_subtrees() != []:
+            self.score = min(subtree.score for subtree in self.get_subtrees())
         else:
-            self.red_win_probability = 0.0
+            return None
 
 
 def gen_gametree(depth: int, board: Board) -> GameTree:
@@ -108,9 +107,9 @@ def gen_gametree(depth: int, board: Board) -> GameTree:
     gametree_so_far = GameTree(board)
     if len(board.get_valid_moves()) == 0:
         if board.is_red_move:
-            gametree_so_far.red_win_probability = -1.0
+            gametree_so_far.score = -1.0
         else:
-            gametree_so_far.red_win_probability = 1.0
+            gametree_so_far.score = 1.0
     elif depth != 0:
         for move in board.get_valid_moves():
             if board.move_type != 'black':

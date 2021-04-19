@@ -192,20 +192,19 @@ class MiniMaxPlayer(Player):
 
     Red is the maximizer, blue is the minimizer.
     """
-    _game_tree: Optional[GameTree]
     depth: int
+    is_red_player: bool
 
-    def __init__(self, game_tree: GameTree, depth: int) -> None:
+    def __init__(self, depth: int, is_red_player: bool) -> None:
         """Initialize this player.
 
         Preconditions:
             - game_tree represents a game tree at the initial state (root is '*')
         """
-        super().__init__(game_tree)
-        self._game_tree = gen_gametree(depth, Board())
         self.depth = depth
+        self.is_red_player = is_red_player
 
-    def make_move(self, valid_moves: list[list]) -> list[list]:
+    def make_move(self, initial: Board) -> Board:
         """Make a move given the current game.
 
         previous_move is the opponent player's most recent move, or None if no moves
@@ -214,25 +213,22 @@ class MiniMaxPlayer(Player):
         Preconditions:
             - There is at least one valid move for the given game
         """
-        g = self._game_tree
-        scores = []
-        for move in
-        """
-        if leaf(n) then return evaluate(n)
-        if n is a max node
-            v := L
-            for each child of n
-                v' := minimax (child)
-                if v' > v, v:= v'
-            return v
-        if n is a min node
-            v := W
-            for each child of n
-                v' := minimax (child)
-                if v' < v, v:= v'
-            return v     
-        """
-        raise NotImplementedError
+        g = gen_gametree(self.depth, initial)
+
+        if g.get_subtrees() == []:
+            return initial
+
+        if self.is_red_player:
+            score = 1.0
+            for subtree in g:
+                score = max(score, self.make_move(initial))
+        else:
+            score = -1.0
+
+        def minimax(self, initial: Board) -> float:
+
+
+
 
 
 class AlphaBetaPlayer(Player):
