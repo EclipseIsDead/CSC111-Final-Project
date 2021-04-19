@@ -5,6 +5,8 @@ This file is for visualizing the data and for getting AI to play against each ot
 This file is Copyright (c) 2021 Siddarth Dagar, Daniel Zhu, and Bradley Mathi.
 """
 import csv
+from typing import Any
+
 from player import *
 from typing import Any
 
