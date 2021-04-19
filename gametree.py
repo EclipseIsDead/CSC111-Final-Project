@@ -1,5 +1,7 @@
 """
 This is the main game tree python file. This stores the tree, game tree and other relevant classes.
+
+Template for gametree was adapted from Assignment 2.
 """
 from __future__ import annotations
 from typing import Optional

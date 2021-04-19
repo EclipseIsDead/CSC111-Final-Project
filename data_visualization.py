@@ -3,7 +3,7 @@ This file is for visualizing the sample games and testing to see if the csv file
 """
 import csv
 from typing import Any
-
+import plotly.express as plt
 from player import *
 
 
@@ -59,3 +59,19 @@ def battle_royale(player1: Any, player2: Any) -> list:
         else:
             win_list.append(1)
     return win_list
+
+
+def plot_winrates(wins: list) -> None:
+    """
+    This function should use battle_royale results to plot results of the win rates.
+
+    Assume wins is the list returned by battle_royale. A 1 corresponds to player1's win.
+    """
+    figure = plt.scatter(x=[x for x in range(1, len(wins) + 1)], y=wins)
+    figure.update_layout(
+        title="Winrates",
+        xaxis_title="Games Played",
+        yaxis_title="Winner",
+    )
+
+    figure.show()
