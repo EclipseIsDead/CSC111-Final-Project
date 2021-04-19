@@ -113,6 +113,7 @@ class HumanPlayer(Player):
 
                 if event.type == pygame.QUIT:
                     pygame.quit()
+                    exit()
 
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     position = pygame.mouse.get_pos()
@@ -145,6 +146,7 @@ class HumanPlayer(Player):
 
                 if event.type == pygame.QUIT:
                     pygame.quit()
+                    exit()
 
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     position = pygame.mouse.get_pos()
@@ -173,6 +175,7 @@ class HumanPlayer(Player):
 
                 if event.type == pygame.QUIT:
                     pygame.quit()
+                    exit()
 
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     position = pygame.mouse.get_pos()
