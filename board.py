@@ -162,6 +162,7 @@ class Board:
                     move_set.remove(move)
             # need to separately check all of these because multiple can be true simultaneously
 
-        move_set.remove(self.board)  # necessary in all cases coincidentally
+        if self.board in move_set:
+            move_set.remove(self.board)  # necessary in all cases coincidentally
 
         return move_set
