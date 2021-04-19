@@ -1,5 +1,10 @@
 """
-This is the main game tree python file. This stores the tree, game tree and other relevant classes.
+CSC111 2021 Final Project - The L Game
+
+This is the main gametree file, and thus stores the GameTree class and any appropriate GameTree
+functions
+
+This file is Copyright (c) 2021 Siddarth Dagar, Daniel Zhu, and Bradley Mathi.
 """
 from __future__ import annotations
 from typing import Optional
@@ -28,7 +33,7 @@ class GameTree:
     #      move by the current player
     _subtrees: list[GameTree]
 
-    def __init__(self, board: Board = Board(), score: float = 0.0) -> None:
+    def __init__(self, board: Board(), score: float = 0.0) -> None:
         """Initialize a new game tree.
 
         Note that this initializer uses optional arguments, as illustrated below.
@@ -65,8 +70,7 @@ class GameTree:
             subtree._update_score()
 
     def __str__(self) -> str:
-        """Return a string representation of this tree.
-        """
+        """Return a string representation of this tree."""
         return self._str_indented(0)
 
     def _str_indented(self, depth: int) -> str:
@@ -94,6 +98,9 @@ class GameTree:
         return False
 
     def _update_score(self) -> None:
+        """Updates the score of the GameTree based on the score of their subtrees. These scores are
+        generated in gen_gametree
+        """
         if self.board.is_red_move and self.get_subtrees() != []:
             self.score = max(subtree.score for subtree in self.get_subtrees())
         elif not self.board.is_red_move and self.get_subtrees() != []:
@@ -103,7 +110,11 @@ class GameTree:
 
 
 def gen_gametree(depth: int, board: Board) -> GameTree:
-    """Dub"""
+    """Generates a GameTree and calculates the appropriate score
+
+    Preconditions:
+        - depth >= 0
+    """
     gametree_so_far = GameTree(board)
     if len(board.get_valid_moves()) == 0:
         if board.is_red_move:
