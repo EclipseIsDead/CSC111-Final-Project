@@ -2,6 +2,8 @@
 This file is for visualizing the sample games and testing to see if the csv files are being read.
 """
 import csv
+from typing import Any
+
 from player import *
 
 
@@ -22,7 +24,7 @@ def print_sample(games_file: str) -> None:
                 print(row[i])
 
 
-def battle_royal(player1: Player, player2: Player) -> list:
+def battle_royale(player1: Any, player2: Any) -> list:
     """
     This function has to AI's play against each other and plots the result of their games.
     """
