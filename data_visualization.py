@@ -5,9 +5,9 @@ This file is for visualizing the data and for getting AI to play against each ot
 This file is Copyright (c) 2021 Siddarth Dagar, Daniel Zhu, and Bradley Mathi.
 """
 import csv
-from typing import Any
 import plotly.express as plt
 from player import *
+import numpy as np
 from typing import Any
 
 
@@ -71,9 +71,39 @@ def plot_winrates(wins: list) -> None:
     """
     figure = plt.scatter(x=[x for x in range(1, len(wins) + 1)], y=wins)
     figure.update_layout(
-        title="Winrates",
+        title="Win Percents",
         xaxis_title="Games Played",
         yaxis_title="Winner",
     )
 
     figure.show()
+
+
+def plot_winpercent(wins: list) -> None:
+    """
+    This function should use battle_royale results to plot results of the win rates as percents of
+    the total.
+
+    Assume wins is the list returned by battle_royale. A 1 corresponds to player1's win.
+    """
+    figure = plt.scatter(x=[x for x in range(1, len(wins) + 1)],
+                         y=cumulated(wins))
+    figure.update_layout(
+        title="Winrates",
+        xaxis_title="Games Played",
+        yaxis_title="Percentage of games won by Player 1",
+    )
+
+    figure.show()
+
+
+def cumulated(lst: list) -> list:
+    """
+    This function should return the cumulative sum divided by 100 at each index of the list lst.
+    """
+    new_lst = []
+    sum = 0
+    for item in lst:
+        sum += item
+        new_lst.append(sum/100)
+    return new_lst
