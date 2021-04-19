@@ -174,7 +174,7 @@ class RandomPlayer(Player):
         super().__init__(game_tree)
         self._game_tree = game_tree
 
-    def make_move(self, valid_moves: list[list]) -> list[list]:
+    def make_move(self, initial: Board) -> list[list]:
         """Make a move given the current game.
 
         previous_move is the opponent player's most recent move, or None if no moves
@@ -183,7 +183,7 @@ class RandomPlayer(Player):
         Preconditions:
             - There is at least one valid move for the given game
         """
-        return random.choice(valid_moves)
+        return random.choice(initial.get_valid_moves())
 
 
 class MiniMaxPlayer(Player):
@@ -204,7 +204,7 @@ class MiniMaxPlayer(Player):
         self.depth = depth
         self.is_red_player = is_red_player
 
-    def make_move(self, initial: Board) -> Board:
+    def make_move(self, initial: Board) -> list:
         """Make a move given the current game.
 
         previous_move is the opponent player's most recent move, or None if no moves
@@ -216,19 +216,20 @@ class MiniMaxPlayer(Player):
         g = gen_gametree(self.depth, initial)
 
         if g.get_subtrees() == []:
-            return initial
-
-        if self.is_red_player:
-            score = 1.0
-            for subtree in g:
-                score = max(score, self.make_move(initial))
+            return initial.board
         else:
-            score = -1.0
-
-        def minimax(self, initial: Board) -> float:
-
-
-
+            best_move = []
+            if initial.is_red_move:
+                best_score = -2.0
+                for subtree in g.get_subtrees():
+                    if subtree.score > best_score:
+                        best_move = subtree.board.board
+            else:
+                best_score = 2.0
+                for subtree in g.get_subtrees():
+                    if subtree.score < best_score:
+                        best_move = subtree.board.board
+            return best_move
 
 
 class AlphaBetaPlayer(Player):
