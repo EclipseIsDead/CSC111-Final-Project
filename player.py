@@ -247,8 +247,13 @@ class MiniMaxPlayer(Player):
             return best_move
 
 
-class AlphaBetaPlayer(Player):
-    """An L Game AI who employs an alpha-beta pruning strategy."""
+class _AlphaBetaPlayer(Player):
+    """An L Game AI who employs an alpha-beta pruning strategy.
+
+    NOTE: We are not able to implement Alpha Beta Pruning due to the fact that the GameTree's score
+    value is already calculated through gen_gametree(). This would have been the part of the code
+    that the AB player would have optimized. The code for the AB player to decide it's move is
+    present here, as this would be identical to how the MiniMax player would decide."""
     depth: int
     is_red_player: bool
 
@@ -271,7 +276,6 @@ class AlphaBetaPlayer(Player):
         Preconditions:
             - There is at least one valid move for the given game
         """
-        minimax = MiniMaxPlayer(self.depth, self.is_red_player)
         g = gen_gametree(self.depth, initial)
 
         if g.get_subtrees() == []:
