@@ -206,8 +206,6 @@ class RandomPlayer(Player):
 class MiniMaxPlayer(Player):
     """
     An L Game AI who employs a mini-max strategy.
-
-    Red is the maximizer, blue is the minimizer.
     """
     depth: int
     is_red_player: bool
@@ -248,19 +246,20 @@ class MiniMaxPlayer(Player):
 
 class AlphaBetaPlayer(Player):
     """An L Game AI who employs an alpha-beta pruning strategy."""
-    _game_tree: Optional[GameTree]
+    depth: int
+    is_red_player: bool
 
-    def __init__(self, game_tree: GameTree) -> None:
+    def __init__(self, depth: int, is_red_player: bool) -> None:
         """Initialize this player.
 
         Preconditions:
-            - game_tree represents a game tree at the initial state (root is '*')
+            - game_tree represents a game tree at the initial state
+            - depth >= 0
         """
-        super().__init__(game_tree)
-        self._game_tree = game_tree
+        self.is_red_player = is_red_player
+        self.depth = depth
 
-    def make_move(self, valid_moves: list[list], board: list[list], colour: Optional[str]) -> list[
-        list]:
+    def make_move(self, initial: Board) -> list:
         """Make a move given the current game.
 
         previous_move is the opponent player's most recent move, or None if no moves
@@ -269,23 +268,23 @@ class AlphaBetaPlayer(Player):
         Preconditions:
             - There is at least one valid move for the given game
         """
-        minimax = MiniMaxPlayer(self._game_tree)
-        pass
-        """
-        if leaf(n) or depth=0 return evaluate(n)
-        if n is a max node
-            v := min
-            for each child of n
-                v' := minimax (child,d-1,...,...)
-                if v' > v, v:= v'
-                if v > max return max
-            return v
-        if n is a min node
-            v := max
-            for each child of n
-                v' := minimax (child,d-1,...,...)
-                if v' < v, v:= v'
-                if v < min return min
-            return v
-        """
-        raise NotImplementedError
+        minimax = MiniMaxPlayer(self.depth, self.is_red_player)
+        g = gen_gametree(self.depth, initial)
+
+        if g.get_subtrees() == []:
+            return initial.board
+        else:
+            best_move = []
+            if initial.is_red_move:
+                best_score = -2.0
+                for subtree in g.get_subtrees():
+                    if subtree.score > best_score:
+                        best_score = subtree.score
+                        best_move = subtree.board.board
+            else:
+                best_score = 2.0
+                for subtree in g.get_subtrees():
+                    if subtree.score < best_score:
+                        best_score = subtree.score
+                        best_move = subtree.board.board
+            return best_move
