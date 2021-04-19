@@ -7,7 +7,6 @@ This file is Copyright (c) 2021 Siddarth Dagar, Daniel Zhu, and Bradley Mathi.
 import csv
 import plotly.express as plt
 from player import *
-import numpy as np
 from typing import Any
 
 
@@ -40,9 +39,9 @@ def battle_royale(player1: Any, player2: Any) -> list:
             # Finds the player for this turn
             curr_player = player_access[new_game_board.move_type]
             # Receives L-move coords from player
-            L_move = curr_player.make_move(new_game_board)
+            l_move = curr_player.make_move(new_game_board)
             # Converts L-move coord to a new board
-            new_game_board.board = L_move
+            new_game_board.board = l_move
             new_game_board.move_type = 'black'
             # determines possible neutral-move set and receives neutral-move from player
             move_set = new_game_board.get_valid_moves()
@@ -100,6 +99,9 @@ def plot_winpercent(wins: list) -> None:
 def cumulated(lst: list) -> list:
     """
     This function should return the cumulative sum divided by 100 at each index of the list lst.
+
+    Precondition:
+        - lst != []
     """
     new_lst = []
     sum = 0
