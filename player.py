@@ -1,7 +1,7 @@
 """
 This should hold all players.
 """
-from gametree import GameTree
+from gametree import *
 from typing import Optional
 import random
 from constants import *
@@ -22,17 +22,6 @@ class Player:
             - game_tree represents a game tree at the initial state (root is '*')
         """
         self._game_tree = game_tree
-
-    def make_move(self, valid_moves: list[list]) -> list[list]:
-        """Make a move given the current game.
-
-        previous_move is the opponent player's most recent move, or None if no moves
-        have been made.
-
-        Preconditions:
-            - There is at least one valid move for the given game
-        """
-        raise NotImplementedError
 
 
 class HumanPlayer(Player):
@@ -204,15 +193,17 @@ class MiniMaxPlayer(Player):
     Red is the maximizer, blue is the minimizer.
     """
     _game_tree: Optional[GameTree]
+    depth: int
 
-    def __init__(self, game_tree: GameTree) -> None:
+    def __init__(self, game_tree: GameTree, depth: int) -> None:
         """Initialize this player.
 
         Preconditions:
             - game_tree represents a game tree at the initial state (root is '*')
         """
         super().__init__(game_tree)
-        self._game_tree = game_tree
+        self._game_tree = gen_gametree(depth, Board())
+        self.depth = depth
 
     def make_move(self, valid_moves: list[list]) -> list[list]:
         """Make a move given the current game.
@@ -224,7 +215,8 @@ class MiniMaxPlayer(Player):
             - There is at least one valid move for the given game
         """
         g = self._game_tree
-        pass
+        scores = []
+        for move in
         """
         if leaf(n) then return evaluate(n)
         if n is a max node
