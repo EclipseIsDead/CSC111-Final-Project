@@ -1,3 +1,10 @@
+"""
+CSC111 2021 Final Project - The L Game
+
+This file stores the Board class and its respective functions.
+
+This file is Copyright (c) 2021 Siddarth Dagar, Daniel Zhu, and Bradley Mathi.
+"""
 import pygame
 import numpy as np
 from constants import *
@@ -5,13 +12,26 @@ from typing import Any, Optional
 
 
 class Board:
-    """This is the actual board object."""
+    """This is the actual board object.
+    Instance Attributes:
+        - board = The board state of the board, stored as a nested list
+        - previous_boards = A list containing all the previous boards
+        - is_red_move = A boolean starting wether it is red's move or not
+        - move_type = A string stating what board piece is being moved. 'red' refers to the red L piece
+                  'blue' refers to the blue L piece, and 'black' refers to a neutral piece
+    """
+    board = list
+    previous_boards = list
+    is_red_move = bool
+    move_type = str
 
-    def __init__(self, board: list = STARTING_BOARD, previous_boards: list = [], is_red_move: bool = True,
+    def __init__(self, board: list = STARTING_BOARD, previous_boards=None, is_red_move: bool = True,
                  move_type: str = 'red') -> None:
         """
-        Init board function, players['red'] is the red player, players['blue'] is the blue player
+        Initializes a new board containing all the inputted information.
         """
+        if previous_boards is None:
+            previous_boards = []
         self.board = board
         self.previous_boards = previous_boards
         self.is_red_move = is_red_move
@@ -19,7 +39,7 @@ class Board:
 
     def draw_board(self, window) -> None:
         """
-        Draws the current board
+        A function that draws the current board
         """
         window.fill(pygame.color.Color('white'))
 
@@ -31,8 +51,9 @@ class Board:
                                                                        SQUARE_SIZE), LINE_THICC)
 
     def draw_pieces(self, window) -> None:
-        """We do this later"""
-
+        """
+        Similar to draw board, this function draws the pieces onto the board
+        """
         for row in range(ROWS):
             for col in range(COLS):
                 if self.board[row][col] == 'black':
@@ -51,12 +72,11 @@ class Board:
 
     def get_valid_moves(self) -> list:
         """
-        This function returns a list of lists with all possible moves calculated when given a board
-        state, and whether it is red's move or not. THIS FUNCTION NEEDS TO USE PREVIOUS MOVE
-        FUNCTION AND THEN REMOVE PREVIOUS STATES FROM POSSIBLE.
+        This function returns a list of lists with all possible moves calculated for the self.board
+        board state based on what piece is being moved.
 
         Preconditions:
-            - initial is represented in move notation
+            - isinstance(self.board, list)
 
         >>> g = Board() # this should load a game tree with only the first position
         >>> len(g.get_valid_moves()) == 5

@@ -1,5 +1,9 @@
 """
-This should hold all players.
+CSC111 2021 Final Project - The L Game
+
+This file stores all the player classes and their respective functions
+
+This file is Copyright (c) 2021 Siddarth Dagar, Daniel Zhu, and Bradley Mathi.
 """
 from gametree import *
 from typing import Optional
@@ -19,20 +23,20 @@ class Player:
         """Initialize this player.
 
         Preconditions:
-            - game_tree represents a game tree at the initial state (root is '*')
+            - game_tree represents a game tree at the initial state
         """
         self._game_tree = game_tree
 
 
 class HumanPlayer(Player):
-    """An L Game AI whose strategy is always picking a random move."""
+    """The class for the human player"""
     _game_tree: Optional[GameTree]
 
     def __init__(self, game_tree: GameTree) -> None:
         """Initialize this player.
 
         Preconditions:
-            - game_tree represents a game tree at the initial state (root is '*')
+            - game_tree represents a game tree at the initial state
         """
         super().__init__(game_tree)
         self._game_tree = game_tree
@@ -40,6 +44,10 @@ class HumanPlayer(Player):
     def calc_row_col(self, position: tuple) -> tuple:
         """
         Turns x, y coordinates into (row, col)
+
+        Preconditions:
+            - 0 <= position[0] <= ROWS
+            - 0 <= position[1] <= COLS
         """
         x, y = position
         col = x // SQUARE_SIZE
@@ -49,6 +57,10 @@ class HumanPlayer(Player):
     def to_board(self, lst: list[tuple], board: list[list], colour: str) -> list[list]:
         """
         Converts the inputed move into a board
+
+        Preconditions:
+            - colour == 'red' or colour == 'blue' or colour == 'black'
+            - all({0 <= tuple[0] <= ROWS and 0 <= tuple[0] <= COLS for tuple in lst})
         """
         new_board = board
         for row in range(ROWS):
@@ -62,7 +74,13 @@ class HumanPlayer(Player):
 
     def add_piece(self, del_tuple: tuple, add_tuple: tuple, board: list[list]) -> list[list]:
         """
-        Moves neutral piece and returns the board after
+        Moves neutral piece and returns the board after the move
+
+        Preconditions:
+            - 0 <= del_tuple[0] <= ROWS
+            - 0 <= del_tuple[1] <= COLS
+            - 0 <= add_tuple[0] <= ROWS
+            - 0 <= add_tuple[1] <= COLS
         """
         new_board = board
         if board[del_tuple[0]][del_tuple[1]] == 'black' and board[add_tuple[0]][
@@ -78,7 +96,8 @@ class HumanPlayer(Player):
         have been made.
 
         Preconditions:
-            - There is at least one valid move for the given game
+            - valid_moves != []
+            - colour == 'red' or colour == 'blue'
         """
         run = True
         lst_so_far = new_board = []
@@ -109,9 +128,9 @@ class HumanPlayer(Player):
 
         return new_board
 
-    def select_square(self, board: list[list]) -> tuple:
+    def select_square(self) -> tuple:
         """
-        Selects neutral piece
+        Returns a tuple representing the row and column of the selected square in the pygame window
         """
         run = True
         clock = pygame.time.Clock()
@@ -134,7 +153,12 @@ class HumanPlayer(Player):
     def move_neutral(self, valid_moves: list[list], board: list[list], del_coords: [tuple]) -> list[
         list]:
         """
-        Moves neutral piece
+        Returns a new board after moving a neutral piece
+
+        Preconditions:
+            - valid_moves != []
+            - 0 <= del_coords[0] <= ROWS
+            - 0 <= del_coords[1] <= COLS
         """
         run = True
         clock = pygame.time.Clock()
@@ -169,20 +193,13 @@ class RandomPlayer(Player):
         """Initialize this player.
 
         Preconditions:
-            - game_tree represents a game tree at the initial state (root is '*')
+            - game_tree represents a game tree at the initial state
         """
         super().__init__(game_tree)
         self._game_tree = game_tree
 
     def make_move(self, initial: Board) -> list[list]:
-        """Make a move given the current game.
-
-        previous_move is the opponent player's most recent move, or None if no moves
-        have been made.
-
-        Preconditions:
-            - There is at least one valid move for the given game
-        """
+        """Make a move given the current game by picking a random move of off the current Board"""
         return random.choice(initial.get_valid_moves())
 
 
@@ -199,19 +216,14 @@ class MiniMaxPlayer(Player):
         """Initialize this player.
 
         Preconditions:
-            - game_tree represents a game tree at the initial state (root is '*')
+            - game_tree represents a game tree at the initial state
+            - depth >= 0
         """
-        self.depth = depth
         self.is_red_player = is_red_player
+        self.depth = depth
 
     def make_move(self, initial: Board) -> list:
-        """Make a move given the current game.
-
-        previous_move is the opponent player's most recent move, or None if no moves
-        have been made.
-
-        Preconditions:
-            - There is at least one valid move for the given game
+        """Make a move given the current game, using a MiniMax algorithim on the generated gametree
         """
         g = gen_gametree(self.depth, initial)
 
@@ -247,7 +259,8 @@ class AlphaBetaPlayer(Player):
         super().__init__(game_tree)
         self._game_tree = game_tree
 
-    def make_move(self, valid_moves: list[list], board: list[list], colour: Optional[str]) -> list[list]:
+    def make_move(self, valid_moves: list[list], board: list[list], colour: Optional[str]) -> list[
+        list]:
         """Make a move given the current game.
 
         previous_move is the opponent player's most recent move, or None if no moves

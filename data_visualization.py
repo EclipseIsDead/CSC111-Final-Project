@@ -1,18 +1,20 @@
 """
-This file is for visualizing the sample games and testing to see if the csv files are being read.
+CSC111 2021 Final Project - The L Game
+This file is for visualizing the data and for getting AI to play against each other.
+
+This file is Copyright (c) 2021 Siddarth Dagar, Daniel Zhu, and Bradley Mathi.
 """
 import csv
 from typing import Any
 import plotly.express as plt
 from player import *
+from typing import Any
 
 
 def print_sample(games_file: str) -> None:
     """
     This is meant to be run on sample_game.csv to quickly look at it in string format.
     It is key to note that the sample_game is the black piece move, after red/blue pieces have moved
-    :param games_file:
-    :return:
     """
     with open(games_file) as csv_file:
         reader = csv.reader(csv_file)
