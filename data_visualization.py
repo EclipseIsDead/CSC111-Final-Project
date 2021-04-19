@@ -26,4 +26,4 @@ def battle_royal(player1: Player, player2: Player) -> None:
     """
     This function has to AI's play against each other and plots the result of their games.
     """
-    return None
+

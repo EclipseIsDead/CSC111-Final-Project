@@ -65,13 +65,13 @@ class HumanPlayer(Player):
         Moves neutral piece and returns the board after
         """
         new_board = board
-        if board[del_tuple[0]][del_tuple[1]] == 'black':
+        if board[del_tuple[0]][del_tuple[1]] == 'black' and board[add_tuple[0]][
+            add_tuple[1]] == 'white':
             new_board[del_tuple[0]][del_tuple[1]] = 'white'
-        if board[add_tuple[0]][add_tuple[1]] == 'white':
             new_board[add_tuple[0]][add_tuple[1]] = 'black'
         return new_board
 
-    def make_move(self, valid_moves: list[list], board: list[list]) -> list[list]:
+    def make_move(self, valid_moves: list[list], board: list[list], colour: str) -> list[list]:
         """Make a move given the current game.
 
         previous_move is the opponent player's most recent move, or None if no moves
@@ -100,13 +100,12 @@ class HumanPlayer(Player):
                         lst_so_far.append(new_tuple)
 
                     if len(lst_so_far) == 4:
-                        new_board = self.to_board(lst_so_far, board, 'red')
+                        new_board = self.to_board(lst_so_far, board, colour)
                         if new_board in valid_moves:
-                            board = new_board
                             run = False
                         else:
                             print('This is not a valid move.')
-                            lst_so_far = []
+                            lst_so_far = new_board = []
 
         return new_board
 
@@ -132,7 +131,8 @@ class HumanPlayer(Player):
 
         return coords
 
-    def move_neutral(self, valid_moves: list[list], board: list[list], del_coords: [tuple]) -> list[list]:
+    def move_neutral(self, valid_moves: list[list], board: list[list], del_coords: [tuple]) -> list[
+        list]:
         """
         Moves neutral piece
         """
@@ -151,12 +151,12 @@ class HumanPlayer(Player):
                     position = pygame.mouse.get_pos()
                     coords = self.calc_row_col(position)
                     new_board = self.add_piece(del_coords, coords, board)
-                    run = False
 
-                    #if new_board in valid_moves:
-                     #   run = False
-                    #else:
-                     #   print('This is not a valid move.')
+                    if new_board in valid_moves:
+                        run = False
+                    else:
+                        new_board = board
+                        print('This is not a valid move.')
 
         return new_board
 
@@ -223,11 +223,13 @@ class MiniMaxPlayer(Player):
                 best_score = -2.0
                 for subtree in g.get_subtrees():
                     if subtree.score > best_score:
+                        best_score = subtree.score
                         best_move = subtree.board.board
             else:
                 best_score = 2.0
                 for subtree in g.get_subtrees():
                     if subtree.score < best_score:
+                        best_score = subtree.score
                         best_move = subtree.board.board
             return best_move
 
@@ -245,7 +247,7 @@ class AlphaBetaPlayer(Player):
         super().__init__(game_tree)
         self._game_tree = game_tree
 
-    def make_move(self, valid_moves: list[list]) -> list[list]:
+    def make_move(self, valid_moves: list[list], board: list[list], colour: Optional[str]) -> list[list]:
         """Make a move given the current game.
 
         previous_move is the opponent player's most recent move, or None if no moves

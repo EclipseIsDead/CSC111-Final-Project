@@ -58,7 +58,7 @@ def main(ai: str) -> None:
         pygame.display.update()
         # L Piece Red Move
         valid_moves = board.get_valid_moves()
-        new_board = p1.make_move(valid_moves, board.board)
+        new_board = p1.make_move(valid_moves, board.board, 'red')
         board.previous_boards.append(board.board)
         board.move_type = 'black'
         board.board = new_board
@@ -82,6 +82,7 @@ def main(ai: str) -> None:
         new_board = p2.make_move(board)
         board.previous_boards.append(board.board)
         board.move_type = 'black'
+        pygame.time.wait(1000)
         board.board = new_board
         board.draw_pieces(WIN)
         pygame.display.update()
@@ -91,9 +92,17 @@ def main(ai: str) -> None:
         new_board = p2.make_move(board)
         board.previous_boards.append(board.board)
         board.move_type = 'red'
+        pygame.time.wait(1000)
         board.board = new_board
         board.draw_pieces(WIN)
         pygame.display.update()
+
+    if len(board.get_valid_moves()) == 0:
+        winner = board.is_red_move
+        if winner == 'red':
+            print('Blue has won the game!')
+        elif winner == 'blue':
+            print('Red has won the game!')
 
 
 if __name__ == '__main__':
