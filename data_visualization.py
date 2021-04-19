@@ -104,8 +104,8 @@ def cumulated(lst: list) -> list:
         - lst != []
     """
     new_lst = []
-    sum = 0
+    total = 0
     for item in lst:
-        sum += item
-        new_lst.append(sum/100)
+        total += item
+        new_lst.append(total/100)
     return new_lst
