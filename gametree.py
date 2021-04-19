@@ -79,7 +79,7 @@ class GameTree:
             turn_desc = "Red's move"
         else:
             turn_desc = "Blue's move"
-        move_desc = f'{self.board.board} -> {turn_desc}\n'
+        move_desc = f'{self.board.board} -> {turn_desc} \n'
         s = '  ' * depth + move_desc
         if self._subtrees == []:
             return s
@@ -101,3 +101,26 @@ class GameTree:
             self.red_win_probability = 1.0
         else:
             self.red_win_probability = 0.0
+
+
+def gen_gametree(depth: int, board: Board) -> GameTree:
+    """Dub"""
+    gametree_so_far = GameTree(board)
+    if len(board.get_valid_moves()) == 0:
+        if board.is_red_move:
+            gametree_so_far.red_win_probability = -1.0
+        else:
+            gametree_so_far.red_win_probability = 1.0
+    elif depth != 0:
+        for move in board.get_valid_moves():
+            if board.move_type != 'black':
+                new_board = Board(move, board.get_valid_moves() + [board.board], board.is_red_move,
+                                  'black')
+            elif board.is_red_move:
+                new_board = Board(move, board.get_valid_moves() + [board.board], False,
+                                  'blue')
+            else:
+                new_board = Board(move, board.get_valid_moves() + [board.board], True,
+                                  'red')
+            gametree_so_far.add_subtree(gen_gametree(depth - 1, new_board))
+    return gametree_so_far
